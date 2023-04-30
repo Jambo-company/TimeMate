@@ -41,12 +41,16 @@ interface AnalogueTimerProps {
   minutes: number
   seconds: number
   isRunning: boolean
+  restart: (newExpiryTimestamp: Date, autoStart?: boolean | undefined) => void
+  pause: () => void
 }
 function AnalogueTimer({
   hours,
   minutes,
   seconds,
   isRunning,
+  restart,
+  pause,
 }: AnalogueTimerProps) {
   const maxTimeOut = useRecoilValue(maxTime)
   const fillColor = useRecoilValue(displayFillColor)
@@ -65,7 +69,7 @@ function AnalogueTimer({
   useEffect(() => {
     setCurrentTime(toSeconds(hours, minutes, seconds))
     setPercentage((currentTime / maxTimeOut) * 100)
-    if (!isRunning) {
+    if (!isRunning && percentage === 0) {
       setPercentage(0)
     }
   }, [seconds, minutes])
@@ -79,9 +83,13 @@ function AnalogueTimer({
           min={0}
           max={maxTimeOut}
           onChange={(event) => {
+            const time = new Date()
+            time.setSeconds(time.getSeconds() + +event.target.value)
+            restart(time)
             setTotalSelectedTime(+event.target.value)
             setCurrentTime(+event.target.value)
             setPercentage((currentTime / maxTimeOut) * 100)
+            pause()
           }}
         />
         <MaximumTime>

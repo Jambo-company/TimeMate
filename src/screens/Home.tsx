@@ -14,21 +14,8 @@ const Wrapper = styled.div`
   height: 100vh;
 `
 
-const Title = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-`
-const LeftContainer = styled.div`
-  width: 5%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-`
-
 const CenterContainer = styled.div`
-  width: 50%;
+  width: 88%;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -43,17 +30,18 @@ const RightContainer = styled.div`
 `
 
 function Home() {
+  const [showingNavigation, setShowingNavigation] = useState(true)
+
   const [isAlarmEnabled, setIsAlarmEnabled] = useState(false)
   const toggleAlarm = () => setIsAlarmEnabled((prev) => !prev)
   const [isNotificationEnabled, setIsNotificationEnabled] = useState(true)
   const toggleNotification = () => setIsNotificationEnabled((prev) => !prev)
 
-  const [showingNavigation, setShowingNavigation] = useState(true)
-
   const expiryTimestamp = new Date()
-  const { seconds, minutes, hours, isRunning, start, pause, resume, restart } =
+  const { seconds, minutes, hours, isRunning, pause, resume, restart } =
     useTimer({
       expiryTimestamp,
+      autoStart: false,
       onExpire: () => {
         console.warn('onExpire called')
       },
@@ -75,17 +63,22 @@ function Home() {
             minutes={minutes}
             seconds={seconds}
             isRunning={isRunning}
+            restart={restart}
+            pause={pause}
           />
         </CenterContainerClock>
       </CenterContainer>
       <RightContainer>
         <BottomRightOptions
+          isRunning={isRunning}
+          setShowingNavigation={setShowingNavigation}
           alarmEnabled={isAlarmEnabled}
           toggleAlarm={toggleAlarm}
           notificationEnabled={isNotificationEnabled}
           toggleNotification={toggleNotification}
           restart={restart}
           pause={pause}
+          resume={resume}
           hours={hours}
           minutes={minutes}
           seconds={seconds}

@@ -15,7 +15,18 @@ export const currentTimeValue = atom({
   default: 0,
 })
 
-export const displayFillColor = atom({
+export enum EnumColors {
+  'RED' = '#EA2027',
+  'DARK_PINK' = '#f53b57',
+  'YELLOW' = '#FFC312',
+  'GREEN' = '#009432',
+  'BLUE' = 'royalblue',
+  'PURPLE' = '#4834d4',
+  'WHITE' = 'whitesmoke',
+  'BLACK' = 'black',
+}
+
+export const displayFillColor = atom<EnumColors>({
   key: 'DisplayColor',
-  default: '#f7c00d',
+  default: EnumColors.YELLOW,
 })
