@@ -66,12 +66,20 @@ function AnalogueTimer({
   const [currentTime, setCurrentTime] = useRecoilState(currentTimeValue)
   console.log('currentTime', currentTime)
 
-  useEffect(() => {
+  function updateTtimer() {
     setCurrentTime(toSeconds(hours, minutes, seconds))
     setPercentage((currentTime / maxTimeOut) * 100)
     if (!isRunning && percentage === 0) {
       setPercentage(0)
     }
+  }
+
+  useEffect(() => {
+    updateTtimer()
+  }, [])
+
+  useEffect(() => {
+    updateTtimer()
   }, [seconds, minutes])
   return (
     <AnlogueTimerContainer>
