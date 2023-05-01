@@ -51,6 +51,9 @@ function App() {
 
     </>
   )
+
+  const [showTimerScreen, setShowTimerScreen] = useState(true)
+  return <>{showTimerScreen && <Home />}</>
 }
 
 export default App
