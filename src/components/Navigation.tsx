@@ -11,9 +11,11 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react'
 import TimeSettings from './nav-components/TimeSettings'
+import { accentColor } from './globals'
+import DisplaySettings from './nav-components/DisplaySettings'
 
 const LeftNav = styled(motion.nav)`
-  position: relative;
+  position: fixed;
   background-color: rgba(50, 50, 65, 0.5);
   width: 80px;
   height: 100%;
@@ -49,10 +51,12 @@ const NavOption = styled.div`
   margin-bottom: 30px;
   width: 75px;
   height: 50px;
+  border-radius: 20px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 `
 const Navtext = styled.span`
   color: gainsboro;
@@ -66,67 +70,109 @@ interface NavigationProps {
   setShowing: React.Dispatch<React.SetStateAction<boolean>>
 }
 function Navigation({ showing, setShowing }: NavigationProps) {
-  const toggleShowing = () => setShowing((prev) => !prev)
-  const [isTimeOption, setIsTimeOption] = useState(false)
-
   const [moreNavOptions, setMoreNavOptions] = useState(false)
+
+  const [isTimeOption, setIsTimeOption] = useState(false)
+  const [isRecordsOption, setIsRecordsOption] = useState(false)
+  const [isDisplayOption, setIsDisplayOption] = useState(false)
+  const [isLanguageOption, setIsLanguageOption] = useState(false)
+  const [isNotificationOption, setIsNotificationOption] = useState(false)
+
+  const navItemsArray = [
+    {
+      icon: faDatabase,
+      text: 'Records',
+      isOptionSelected: isRecordsOption,
+      setSelectedNavOption: setIsRecordsOption,
+    },
+    {
+      icon: faClock,
+      text: 'Time',
+      isOptionSelected: isTimeOption,
+      setSelectedNavOption: setIsTimeOption,
+    },
+    {
+      icon: faDisplay,
+      text: 'Display',
+      isOptionSelected: isDisplayOption,
+      setSelectedNavOption: setIsDisplayOption,
+    },
+    {
+      icon: faLanguage,
+      text: 'Language',
+      isOptionSelected: isLanguageOption,
+      setSelectedNavOption: setIsLanguageOption,
+    },
+    {
+      icon: faBell,
+      text: 'Notification',
+      isOptionSelected: isNotificationOption,
+      setSelectedNavOption: setIsNotificationOption,
+    },
+  ]
+
   return (
-    <AnimatePresence>
+    <AnimatePresence initial={false}>
       {showing ? (
         <LeftNav
           layoutId="hide"
-          initial={{ translateX: 0 }}
+          transition={{ delay: 0.3, delayChildren: 0 }}
+          initial={{ translateX: -100 }}
           animate={{ translateX: 0 }}
           exit={{ translateX: -100 }}
           layout>
           <NavOptionCarrier>
-            <NavOption>
-              <FontAwesomeIcon icon={faDatabase} color="white" />
-              <Navtext>Records</Navtext>
-            </NavOption>
-
-            <NavOption
-              onClick={() => {
-                setMoreNavOptions(true)
-                setIsTimeOption(true)
-              }}>
-              <FontAwesomeIcon icon={faClock} color="white" />
-              <Navtext>Time</Navtext>
-            </NavOption>
-
-            <NavOption>
-              <FontAwesomeIcon icon={faDisplay} color="white" />
-              <Navtext>Display</Navtext>
-            </NavOption>
-
-            <NavOption>
-              <FontAwesomeIcon icon={faLanguage} color="white" />
-              <Navtext>Language</Navtext>
-            </NavOption>
-
-            <NavOption>
-              <FontAwesomeIcon icon={faBell} color="white" />
-              <Navtext>Notification</Navtext>
-            </NavOption>
+            {navItemsArray.map((option, index) => (
+              <NavOption
+                key={index}
+                onClick={() => {
+                  setMoreNavOptions(true)
+                  navItemsArray.forEach((otherOptions) => {
+                    otherOptions.setSelectedNavOption(false)
+                  })
+                  option.setSelectedNavOption(true)
+                }}>
+                <FontAwesomeIcon
+                  style={{
+                    backgroundColor: option.isOptionSelected
+                      ? accentColor
+                      : 'transparent',
+                    padding: '5px 15px',
+                    transition: 'all .3s ease-out',
+                    borderRadius: 35,
+                  }}
+                  icon={option.icon}
+                  color="white"
+                />
+                <Navtext>{option.text}</Navtext>
+              </NavOption>
+            ))}
           </NavOptionCarrier>
-          {moreNavOptions && (
-            <LeftNavSettings
-              transition={{ duration: 0.1 }}
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              exit={{ scaleX: 0 }}>
-              <FontAwesomeIcon
-                onClick={() => setMoreNavOptions(false)}
-                icon={faAngleLeft}
-                style={{ margin: '17px 0px', cursor: 'pointer' }}
-              />
-              {isTimeOption && <TimeSettings />}
-            </LeftNavSettings>
-          )}
+
+          <AnimatePresence>
+            {moreNavOptions && (
+              <LeftNavSettings
+                transition={{ delay: 0.3 }}
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                exit={{ scaleX: 0 }}>
+                <FontAwesomeIcon
+                  onClick={() => {
+                    navItemsArray.forEach((option) =>
+                      option.setSelectedNavOption(false)
+                    )
+                    setMoreNavOptions(false)
+                  }}
+                  icon={faAngleLeft}
+                  style={{ margin: '17px 0px', cursor: 'pointer' }}
+                />
+                {isTimeOption && <TimeSettings />}
+                {isDisplayOption && <DisplaySettings />}
+              </LeftNavSettings>
+            )}
+          </AnimatePresence>
         </LeftNav>
       ) : null}
-
-      {/* <LeftContainerBtn onClick={toggleShowing}>show/hide</LeftContainerBtn> */}
     </AnimatePresence>
   )
 }

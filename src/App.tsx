@@ -1,3 +1,4 @@
+
 import {
   BrowserRouter,
   Routes, // instead of "Switch"
@@ -8,11 +9,12 @@ import {
 import React, { useEffect, useState } from 'react'
 import 'react-circular-progressbar/dist/styles.css'
 
-import Auth from './Router/Auth'
+import Auth from './screens/Auth'
 import { auth } from './firebase'
 
+
 import 'react-circular-progressbar/dist/styles.css'
-import Home from './Router/Home'
+import Home from './screens/Home'
 
 
 function App() {
@@ -32,6 +34,7 @@ function App() {
 
   return (
     <>
+
       <BrowserRouter>
         <Routes>
           {isLoggedIn ? (
@@ -44,6 +47,8 @@ function App() {
           {/* {init ? <Route path="/" element={<Home />} /> : 'initializing...'} */}
         </Routes>
       </BrowserRouter>
+      <Home />
+
     </>
   )
 }
