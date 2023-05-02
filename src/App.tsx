@@ -12,14 +12,17 @@ import { auth } from './firebase'
 
 import 'react-circular-progressbar/dist/styles.css'
 import Home from './screens/Home'
+import Navigation from './components/Navigation'
+import Dashboard from './components/Dashboard'
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [init, setInit] = useState(false)
+
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
       if (user) {
-        setIsLoggedIn(false)
+        setIsLoggedIn(true)
       } else {
         setIsLoggedIn(false)
       }
@@ -27,20 +30,34 @@ function App() {
     })
   }, [])
 
+
   return (
     <>
       <BrowserRouter>
+        {isLoggedIn && (
+          <Navigation
+            showing={false}
+            setShowing={function (value: React.SetStateAction<boolean>): void {
+              throw new Error('Function not implemented.')
+            }}
+          />
+        )}
         <Routes>
           {isLoggedIn ? (
             <Route path="/" element={<Home />} />
           ) : (
-            <Route path="/login" element={<Auth />} />
+            <>
+              <Route path="/" element={<Auth loggedIn={setIsLoggedIn} />}></Route>
+            </>
           )}
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
+        
       </BrowserRouter>
-      <Home />
     </>
   )
 }
 
 export default App
+
+//reerfeffref 

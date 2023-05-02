@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import {
+  AuthProvider,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signInWithPopup,
+  GoogleAuthProvider,
 } from 'firebase/auth'
+
 import { auth, firebaseInstance } from '../firebase'
 
 import { motion, AnimatePresence } from 'framer-motion'
@@ -118,7 +121,7 @@ const FormLoginBtn = styled.input`
   margin-bottom: 40px;
   cursor: pointer;
 `
-const FormSocialLoginBtn = styled.div`
+const FormSocialLoginBtn = styled.div<{ name: string }>`
   display: flex;
   align-items: center;
   justify-content: space-evenly;
@@ -132,6 +135,9 @@ const FormSocialLoginBtn = styled.div`
   cursor: pointer;
 
   :hover {
+    box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px,
+      rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px,
+      rgba(0, 0, 0, 0.07) 0px 16px 16px;
     border: 2px solid white;
     transition-delay: 2s ease-in-out;
   }
@@ -141,7 +147,12 @@ const FormSocialLoginSpan = styled.span`
   margin-left: -10px;
   color: white;
 `
-const Auth = () => {
+
+interface ILogInProp {
+  loggedIn: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+const Auth = ({ loggedIn }: ILogInProp) => {
   const [email, setEmail] = useState()
   const [password, setPassword] = useState()
   const [newAccount, setNewAccount] = useState(true)
@@ -164,7 +175,7 @@ const Auth = () => {
     try {
       if (newAccount) {
         // @ts-ignore
-        createUserWithEmailAndPassword(auth, email, password).then(
+        await createUserWithEmailAndPassword(auth, email, password).then(
           (userCredential) => {
             const user = userCredential.user
             console.log(user)
@@ -172,28 +183,31 @@ const Auth = () => {
         )
       } else {
         // @ts-ignore
-        signInWithEmailAndPassword(auth, email, password).then(
+        await signInWithEmailAndPassword(auth, email, password).then(
           (userCredential) => {
             const user = userCredential.user
             console.log(user)
           }
         )
       }
+      // loggedIn(false)
     } catch (error: any) {
       setError(error.message)
     }
   }
   const toggleAccount = () => setNewAccount((prev) => !prev)
-  // const onSocialClick = async (event: any) => {
-  //   const {
-  //     target: { name },
-  //   } = event
-  //   let provider
-  //   if (name === 'google') {
-  //     provider = new firebaseInstance.auth.GoogleAuthProvider()
-  //   }
-  //   const data = await signInWithPopup(auth, provider)
-  // }
+  const SocialLogin = async (event: any) => {
+    const {
+      target: { name },
+    } = event
+    console.log(name)
+
+    let provider: AuthProvider
+    provider = new GoogleAuthProvider()
+
+    const data = await signInWithPopup(auth, provider!)
+    console.log(data)
+  }
 
   return (
     <>
@@ -224,9 +238,9 @@ const Auth = () => {
           value={newAccount ? 'Create A New Account' : 'Login'}
         />
         <AnimatePresence>
-          <FormSocialLoginBtn /* onClick={onSocialClick} */>
+          <FormSocialLoginBtn onClick={SocialLogin} name="google">
             <FontAwesomeIcon icon={faGoogle} color="white" size="2x" />
-            <FormSocialLoginSpan /* layout  */>Google</FormSocialLoginSpan>
+            <FormSocialLoginSpan>Google</FormSocialLoginSpan>
           </FormSocialLoginBtn>
         </AnimatePresence>
       </Form>
