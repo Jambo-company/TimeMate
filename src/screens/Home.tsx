@@ -18,7 +18,6 @@ import {
 } from 'react-circular-progressbar'
 import 'react-circular-progressbar/dist/styles.css'
 
-
 import { useTimer } from 'react-timer-hook'
 import Navigation from '../components/Navigation'
 import BottomRightOptions from '../components/BottomRightOptions'
@@ -107,5 +106,3 @@ function Home() {
   )
 }
 export default Home
-
-

@@ -5,7 +5,7 @@ const { persistAtom } = recoilPersist()
 
 export const maxTime = atom({
   key: 'MaximumTime', // unique ID (with respect to other atoms/selectors)
-  default: 3600, // default value (aka initial value)
+  default: 7200, // default value (aka initial value)
   effects_UNSTABLE: [persistAtom],
 })
 

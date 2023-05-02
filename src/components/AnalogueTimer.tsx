@@ -4,6 +4,7 @@ import {
   CircularProgressbarWithChildren,
 } from 'react-circular-progressbar'
 import 'react-circular-progressbar/dist/styles.css'
+import CircularSlider from '@fseehawer/react-circular-slider'
 import { toHours, toSeconds } from '../utilities'
 import styled from 'styled-components'
 import { useRecoilState, useRecoilValue } from 'recoil'
@@ -18,22 +19,10 @@ const AnlogueTimerContainer = styled.div`
   position: relative;
 `
 
-const TimeInputFieldSet = styled.fieldset`
-  width: 100%;
-  position: absolute;
-  top: -25px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`
-const MinimumTime = styled.span``
-const MaximumTime = styled(MinimumTime)``
-const TimeInput = styled.input`
-  width: 80%;
-`
-
 const CircularBarHolder = styled.div`
   width: 350px;
+  border-radius: 50%;
+  overflow: hidden;
 `
 
 interface AnalogueTimerProps {
@@ -83,28 +72,6 @@ function AnalogueTimer({
   }, [seconds, minutes])
   return (
     <AnlogueTimerContainer>
-      <TimeInputFieldSet>
-        <MinimumTime>0min</MinimumTime>
-        <TimeInput
-          value={totalSelectedTime}
-          type="range"
-          min={0}
-          max={maxTimeOut}
-          onChange={(event) => {
-            const time = new Date()
-            time.setSeconds(time.getSeconds() + +event.target.value)
-            restart(time)
-            setTotalSelectedTime(+event.target.value)
-            setCurrentTime(+event.target.value)
-            setPercentage((currentTime / maxTimeOut) * 100)
-            pause()
-          }}
-        />
-        <MaximumTime>
-          {toHours(maxTimeOut)}
-          {toHours(maxTimeOut) === 1 ? 'hr' : 'hrs'}
-        </MaximumTime>
-      </TimeInputFieldSet>
       <CircularBarHolder>
         <CircularProgressbarWithChildren
           strokeWidth={50}
@@ -116,7 +83,30 @@ function AnalogueTimer({
             trailColor: 'rgba(0, 0, 0, 0.15)',
             rotation: 25,
             strokeLinecap: 'butt',
-          })}></CircularProgressbarWithChildren>
+            pathTransitionDuration: 0.01,
+          })}>
+          <div style={{ opacity: 0 }}>
+            <CircularSlider
+              direction={-1}
+              progressSize={100}
+              knobSize={400}
+              width={150}
+              min={0}
+              max={maxTimeOut}
+              progressLineCap="flat"
+              hideKnob={false}
+              onChange={(value: number) => {
+                setPercentage((value / maxTimeOut) * 100)
+                const time = new Date()
+                time.setSeconds(time.getSeconds() + value)
+                restart(time)
+                setTotalSelectedTime(value)
+                setCurrentTime(value)
+                pause()
+              }}
+            />
+          </div>
+        </CircularProgressbarWithChildren>
       </CircularBarHolder>
     </AnlogueTimerContainer>
   )
