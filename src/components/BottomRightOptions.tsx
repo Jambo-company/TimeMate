@@ -43,12 +43,13 @@ const Switcher = styled(motion.div)`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 170px;
+  width: 190px;
 `
 
 const SwitchDataInfo = styled.span`
   font-size: 12px;
   color: white;
+  width: 100%;
 `
 
 const TextTimerContainer = styled.div`

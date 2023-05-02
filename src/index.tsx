@@ -4,8 +4,8 @@ import App from './App'
 import { createGlobalStyle } from 'styled-components'
 import { RecoilRoot } from 'recoil'
 
-
 const GlobalStyles = createGlobalStyle`
+@import url('https://fonts.google.com/specimen/Montserrat?preview.text=12:23&preview.text_type=custom');
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -36,6 +36,8 @@ body {
 	line-height: 1;
   background: rgba(0, 0, 0, 0.87);
   height: 100vh;
+  font-family: 'Montserrat', sans-serif;
+
 }
 ol, ul {
 	list-style: none;

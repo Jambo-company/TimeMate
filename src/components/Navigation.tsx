@@ -8,11 +8,14 @@ import {
   faLanguage,
   faBell,
   faAngleLeft,
+  faSignOut,
 } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react'
 import TimeSettings from './nav-components/TimeSettings'
 import { accentColor } from './globals'
 import DisplaySettings from './nav-components/DisplaySettings'
+import { auth } from '../firebase'
+import { Link } from 'react-router-dom'
 
 const LeftNav = styled(motion.nav)`
   position: fixed;
@@ -77,6 +80,7 @@ function Navigation({ showing, setShowing }: NavigationProps) {
   const [isDisplayOption, setIsDisplayOption] = useState(false)
   const [isLanguageOption, setIsLanguageOption] = useState(false)
   const [isNotificationOption, setIsNotificationOption] = useState(false)
+  const onLogoutClick = () => auth.signOut()
 
   const navItemsArray = [
     {
@@ -84,6 +88,7 @@ function Navigation({ showing, setShowing }: NavigationProps) {
       text: 'Records',
       isOptionSelected: isRecordsOption,
       setSelectedNavOption: setIsRecordsOption,
+      linkPath: '/dashboard',
     },
     {
       icon: faClock,
@@ -132,21 +137,32 @@ function Navigation({ showing, setShowing }: NavigationProps) {
                   })
                   option.setSelectedNavOption(true)
                 }}>
-                <FontAwesomeIcon
-                  style={{
-                    backgroundColor: option.isOptionSelected
-                      ? accentColor
-                      : 'transparent',
-                    padding: '5px 15px',
-                    transition: 'all .3s ease-out',
-                    borderRadius: 35,
-                  }}
-                  icon={option.icon}
-                  color="white"
-                />
+                <Link to={option.linkPath ? option.linkPath : ''}>
+                  <FontAwesomeIcon
+                    style={{
+                      backgroundColor: option.isOptionSelected
+                        ? accentColor
+                        : 'transparent',
+                      padding: '5px 15px',
+                      transition: 'all .3s ease-out',
+                      borderRadius: 35,
+                    }}
+                    icon={option.icon}
+                    color="white"
+                  />
+                </Link>
+
                 <Navtext>{option.text}</Navtext>
               </NavOption>
             ))}
+            <NavOption>
+              <FontAwesomeIcon
+                icon={faSignOut}
+                color="white"
+                onClick={onLogoutClick}
+              />
+              <Navtext>Sign Out</Navtext>
+            </NavOption>
           </NavOptionCarrier>
 
           <AnimatePresence>

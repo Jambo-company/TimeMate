@@ -3,21 +3,7 @@ import styled from 'styled-components'
 
 import { motion, AnimatePresence } from 'framer-motion'
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faClock,
-  faDatabase,
-  faDisplay,
-  faLanguage,
-  faBell,
-} from '@fortawesome/free-solid-svg-icons'
-
-import {
-  buildStyles,
-  CircularProgressbarWithChildren,
-} from 'react-circular-progressbar'
 import 'react-circular-progressbar/dist/styles.css'
-
 
 import { useTimer } from 'react-timer-hook'
 import Navigation from '../components/Navigation'
@@ -25,6 +11,7 @@ import BottomRightOptions from '../components/BottomRightOptions'
 import { useRecoilValue } from 'recoil'
 import { maxTime } from '../atom'
 import AnalogueTimer from '../components/AnalogueTimer'
+import Dashboard from '../components/Dashboard'
 
 const Wrapper = styled.div`
   display: flex;
@@ -107,5 +94,3 @@ function Home() {
   )
 }
 export default Home
-
-
