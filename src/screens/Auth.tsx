@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import {
   AuthProvider,
@@ -26,6 +26,7 @@ import {
   faBell,
   faAngleLeft,
 } from '@fortawesome/free-solid-svg-icons'
+import { useNavigate } from 'react-router-dom'
 
 const Background = styled.div`
   width: 430px;
@@ -148,12 +149,23 @@ const FormSocialLoginSpan = styled.span`
   color: white;
 `
 
+interface ILogInProp {
+  isLoggedIn: boolean
+  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>
+}
 
-const Auth = () => {
+const Auth = ({ isLoggedIn, setIsLoggedIn }: ILogInProp) => {
   const [email, setEmail] = useState()
   const [password, setPassword] = useState()
   const [newAccount, setNewAccount] = useState(true)
   const [error, setError] = useState('')
+
+  const navigation = useNavigate()
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigation('/')
+    }
+  }, [isLoggedIn])
 
   const onFormChange = (event: any) => {
     console.log(event.target.name)
@@ -187,7 +199,7 @@ const Auth = () => {
           }
         )
       }
-      // loggedIn(false)
+      setIsLoggedIn(true)
     } catch (error: any) {
       setError(error.message)
     }
@@ -203,6 +215,7 @@ const Auth = () => {
     provider = new GoogleAuthProvider()
 
     const data = await signInWithPopup(auth, provider!)
+    setIsLoggedIn(true)
     console.log(data)
   }
 

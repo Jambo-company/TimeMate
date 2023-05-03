@@ -53,7 +53,6 @@ function AnalogueTimer({
   }, [totalSelectedTime])
 
   const [currentTime, setCurrentTime] = useRecoilState(currentTimeValue)
-  console.log('currentTime', currentTime)
 
   function updateTtimer() {
     setCurrentTime(toSeconds(hours, minutes, seconds))
@@ -70,6 +69,7 @@ function AnalogueTimer({
   useEffect(() => {
     updateTtimer()
   }, [seconds, minutes])
+
   return (
     <AnlogueTimerContainer>
       <CircularBarHolder>
