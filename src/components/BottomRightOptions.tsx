@@ -5,6 +5,7 @@ import { selectedTime } from '../atom'
 import { accentColor } from './globals'
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion, useAnimation } from 'framer-motion'
+import { dbService } from '../firebase'
 
 const RightContainerData = styled.div`
   width: 100%;
@@ -91,6 +92,12 @@ function BottomRightOptions({
 }: BottomRightOptionsProps) {
   const totalSelectedTime = useRecoilValue(selectedTime)
 
+  const [prevTime, setPrevTime] = useState(0)
+  useEffect(() => {
+    setPrevTime(0)
+    getDashboardData()
+  }, [])
+
   const switchItemsArray = [
     {
       text: 'Activate alarm sound',
@@ -113,21 +120,49 @@ function BottomRightOptions({
   }, [isRunning])
 
   const btnAnimation = useAnimation()
+
+  const [dashboardRecords, setDashboardRecords] = useState<any>([])
+  console.log(dashboardRecords)
+  async function saveToDashboard(time: number) {
+    const newTimerData = {
+      time,
+      startTime: Date.now(),
+      endTime: null,
+    }
+    await dbService.collection('timer').add(newTimerData)
+  }
+  async function getDashboardData() {
+    await dbService.collection('timer').onSnapshot((snapshots) => {
+      const dashboard = snapshots.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }))
+      setDashboardRecords(dashboard)
+    })
+  }
   return (
     <RightContainerData>
       <StartOrPauseBtn
         variants={startOrPauseVars}
         animate={btnAnimation}
         layoutId="start-pause-btn"
-        onClick={() => {
-          console.log('Start timeout for duration of:', totalSelectedTime)
+        onClick={async () => {
           if (hours === 0 && minutes === 0 && seconds === 0) {
             return
           }
           if (isRunning) {
             pause()
           } else {
+            console.log('Start timeout for duration of:', totalSelectedTime)
+            console.log('prevTime', prevTime)
             resume()
+            console.log('nowTime', totalSelectedTime)
+            if (prevTime !== totalSelectedTime) {
+              console.log('Save Dashboard')
+              await saveToDashboard(totalSelectedTime)
+              await getDashboardData()
+            }
+            setPrevTime(totalSelectedTime)
           }
           btnAnimation.start('hide')
           setTimeout(() => {

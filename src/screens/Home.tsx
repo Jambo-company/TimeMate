@@ -11,7 +11,6 @@ import BottomRightOptions from '../components/BottomRightOptions'
 import { useRecoilValue } from 'recoil'
 import { maxTime } from '../atom'
 import AnalogueTimer from '../components/AnalogueTimer'
-import Dashboard from '../components/Dashboard'
 
 const Wrapper = styled.div`
   display: flex;
