@@ -148,11 +148,8 @@ const FormSocialLoginSpan = styled.span`
   color: white;
 `
 
-interface ILogInProp {
-  loggedIn: React.Dispatch<React.SetStateAction<boolean>>
-}
 
-const Auth = ({ loggedIn }: ILogInProp) => {
+const Auth = () => {
   const [email, setEmail] = useState()
   const [password, setPassword] = useState()
   const [newAccount, setNewAccount] = useState(true)

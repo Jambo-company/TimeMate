@@ -34,20 +34,12 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        {isLoggedIn && (
-          <Navigation
-            showing={false}
-            setShowing={function (value: React.SetStateAction<boolean>): void {
-              throw new Error('Function not implemented.')
-            }}
-          />
-        )}
         <Routes>
           {isLoggedIn ? (
             <Route path="/" element={<Home />} />
           ) : (
             <>
-              <Route path="/" element={<Auth loggedIn={setIsLoggedIn} />}></Route>
+              <Route path="/" element={<Auth/>}></Route>
             </>
           )}
           <Route path="/dashboard" element={<Dashboard />} />
@@ -59,5 +51,3 @@ function App() {
 }
 
 export default App
-
-//reerfeffref 
