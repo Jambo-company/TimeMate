@@ -6,6 +6,7 @@ import { accentColor } from './globals'
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion, useAnimation } from 'framer-motion'
 import { dbService } from '../firebase'
+import { User } from 'firebase/auth'
 
 const RightContainerData = styled.div`
   width: 100%;
@@ -15,6 +16,9 @@ const RightContainerData = styled.div`
   gap: 20px;
   padding-bottom: 25px;
   padding-right: 45px;
+  @media (max-width: 461px) {
+    align-items: start;
+  }
 `
 const StartOrPauseBtn = styled(motion.button)`
   padding: 10px 20px;
@@ -63,6 +67,7 @@ const TextTimer = styled(motion.span)`
 `
 
 interface BottomRightOptionsProps {
+  user: User | null
   isRunning: boolean
   setShowingNavigation: React.Dispatch<React.SetStateAction<boolean>>
   alarmEnabled: boolean
@@ -122,7 +127,6 @@ function BottomRightOptions({
   const btnAnimation = useAnimation()
 
   const [dashboardRecords, setDashboardRecords] = useState<any>([])
-  console.log(dashboardRecords)
   async function saveToDashboard(time: number) {
     const newTimerData = {
       time,

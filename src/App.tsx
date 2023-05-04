@@ -13,15 +13,19 @@ import { auth } from './firebase'
 import 'react-circular-progressbar/dist/styles.css'
 import Home from './screens/Home'
 import Dashboard from './components/Dashboard'
+import { User } from 'firebase/auth'
 
 function App() {
   const [init, setInit] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [user, setUser] = useState(null)
+
+  const [user, setUser] = useState<User | null>(null)
+  console.log('User', user)
 
   useEffect(() => {
-    auth.onAuthStateChanged((user) => {
-      if (user) {
+    auth.onAuthStateChanged((authUser) => {
+      if (authUser) {
+        setUser(authUser)
         setIsLoggedIn(true)
       } else {
         setIsLoggedIn(false)
@@ -31,20 +35,25 @@ function App() {
   }, [])
 
   return (
-    <>
-      <BrowserRouter>
-        <Routes>
-          <Route
-            path="/login"
-            element={
-              <Auth isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
-            }
-          />
-          <Route path="/" element={<Home />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-        </Routes>
-      </BrowserRouter>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            isLoggedIn ? (
+              <Home user={user} />
+            ) : (
+              <Auth
+                isLoggedIn={isLoggedIn}
+                setIsLoggedIn={setIsLoggedIn}
+                setUser={setUser}
+              />
+            )
+          }
+        />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 

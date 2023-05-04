@@ -1,22 +1,21 @@
 import { useState } from 'react'
+import { User } from 'firebase/auth'
 import styled from 'styled-components'
-
-import { motion, AnimatePresence } from 'framer-motion'
-
-import 'react-circular-progressbar/dist/styles.css'
-
 import { useTimer } from 'react-timer-hook'
+import 'react-circular-progressbar/dist/styles.css'
 import Navigation from '../components/Navigation'
 import BottomRightOptions from '../components/BottomRightOptions'
-import { useRecoilValue } from 'recoil'
-import { maxTime } from '../atom'
-import AnalogueTimer from '../components/AnalogueTimer'
+import AnalogueTimer from '../components/ClockTimer/AnalogueTimer'
 
 const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  width: 100%;
   height: 100vh;
+  @media (max-width: 461px) {
+    flex-direction: column;
+    align-items: start;
+    padding-left: 110px;
+  }
 `
 
 const CenterContainer = styled.div`
@@ -27,14 +26,19 @@ const CenterContainer = styled.div`
   align-items: center;
   justify-content: center;
 `
-const CenterContainerClock = styled.div``
+const CenterContainerClock = styled.div`
+  margin-left: 15%;
+`
 const RightContainer = styled.div`
   height: 100%;
   display: flex;
   align-items: end;
 `
 
-function Home() {
+interface HomeProps {
+  user: User | null
+}
+function Home({ user }: HomeProps) {
   const [showingNavigation, setShowingNavigation] = useState(true)
 
   const [isAlarmEnabled, setIsAlarmEnabled] = useState(false)
@@ -51,9 +55,6 @@ function Home() {
         console.warn('onExpire called')
       },
     })
-
-  const maxTimeOut = useRecoilValue(maxTime)
-  console.log(maxTimeOut)
 
   return (
     <Wrapper>
@@ -75,6 +76,7 @@ function Home() {
       </CenterContainer>
       <RightContainer>
         <BottomRightOptions
+          user={user}
           isRunning={isRunning}
           setShowingNavigation={setShowingNavigation}
           alarmEnabled={isAlarmEnabled}

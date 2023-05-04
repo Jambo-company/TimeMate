@@ -5,7 +5,6 @@ import {
   faClock,
   faDatabase,
   faDisplay,
-  faLanguage,
   faBell,
   faAngleLeft,
   faSignOut,
@@ -19,6 +18,7 @@ import { Link } from 'react-router-dom'
 
 const LeftNav = styled(motion.nav)`
   position: fixed;
+  left: 0px;
   background-color: rgba(50, 50, 65, 0.5);
   width: 80px;
   height: 100%;
@@ -101,12 +101,6 @@ function Navigation({ showing, setShowing }: NavigationProps) {
       text: 'Display',
       isOptionSelected: isDisplayOption,
       setSelectedNavOption: setIsDisplayOption,
-    },
-    {
-      icon: faLanguage,
-      text: 'Language',
-      isOptionSelected: isLanguageOption,
-      setSelectedNavOption: setIsLanguageOption,
     },
     {
       icon: faBell,

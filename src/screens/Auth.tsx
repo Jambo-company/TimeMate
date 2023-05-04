@@ -6,26 +6,15 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
+  User,
 } from 'firebase/auth'
 
-import { auth, firebaseInstance } from '../firebase'
+import { auth } from '../firebase'
 
-import { motion, AnimatePresence } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faGoogle,
-  faGooglePlusG,
-  faGooglePlus,
-} from '@fortawesome/free-brands-svg-icons'
-import {
-  faClock,
-  faDatabase,
-  faDisplay,
-  faLanguage,
-  faBell,
-  faAngleLeft,
-} from '@fortawesome/free-solid-svg-icons'
+import { faGoogle } from '@fortawesome/free-brands-svg-icons'
 import { useNavigate } from 'react-router-dom'
 
 const Background = styled.div`
@@ -152,9 +141,10 @@ const FormSocialLoginSpan = styled.span`
 interface ILogInProp {
   isLoggedIn: boolean
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>
+  setUser: React.Dispatch<React.SetStateAction<User | null>>
 }
 
-const Auth = ({ isLoggedIn, setIsLoggedIn }: ILogInProp) => {
+const Auth = ({ isLoggedIn, setIsLoggedIn, setUser }: ILogInProp) => {
   const [email, setEmail] = useState()
   const [password, setPassword] = useState()
   const [newAccount, setNewAccount] = useState(true)
@@ -182,20 +172,21 @@ const Auth = ({ isLoggedIn, setIsLoggedIn }: ILogInProp) => {
     event.preventDefault()
 
     try {
+      let authUser: User | null
       if (newAccount) {
         // @ts-ignore
         await createUserWithEmailAndPassword(auth, email, password).then(
           (userCredential) => {
-            const user = userCredential.user
-            console.log(user)
+            authUser = userCredential.user
+            setUser(authUser)
           }
         )
       } else {
         // @ts-ignore
         await signInWithEmailAndPassword(auth, email, password).then(
           (userCredential) => {
-            const user = userCredential.user
-            console.log(user)
+            authUser = userCredential.user
+            setUser(authUser)
           }
         )
       }
@@ -216,7 +207,7 @@ const Auth = ({ isLoggedIn, setIsLoggedIn }: ILogInProp) => {
 
     const data = await signInWithPopup(auth, provider!)
     setIsLoggedIn(true)
-    console.log(data)
+    setUser(data.user)
   }
 
   return (

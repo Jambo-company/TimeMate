@@ -34,7 +34,7 @@ footer, header, hgroup, menu, nav, section {
 }
 body {
 	line-height: 1;
-  background: rgba(0, 0, 0, 0.87);
+  background: rgba(35, 35, 35, 1);
   height: 100vh;
   font-family: 'Montserrat', sans-serif;
 
