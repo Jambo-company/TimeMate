@@ -12,6 +12,7 @@ import {
   currentTimeValue,
   displayFillColor,
   maxTime,
+  rotationInterval,
   selectedTime,
 } from '../../atom'
 import ClockUnits from './ClockUnits'
@@ -68,6 +69,7 @@ function AnalogueTimer({
   pause,
 }: AnalogueTimerProps) {
   const maxTimeOut = useRecoilValue(maxTime)
+  const interval = useRecoilValue(rotationInterval)
   const fillColor = useRecoilValue(displayFillColor)
 
   const [percentage, setPercentage] = useState(0)
@@ -93,8 +95,11 @@ function AnalogueTimer({
     updateTtimer()
   }, [seconds, minutes])
 
-  console.log('Inner Width', window.innerWidth)
-  console.log('Outer Width', window.outerWidth)
+  const [timer, setTimer] = useState(true)
+  useEffect(() => {
+    setTimer(false)
+    setTimeout(() => setTimer(true), 1)
+  }, [maxTimeOut])
 
   return (
     <ClockUnits
@@ -108,7 +113,7 @@ function AnalogueTimer({
               styles={buildStyles({
                 pathColor: fillColor,
                 trailColor: 'rgba(30, 30, 30, 0.75)',
-                rotation: 25,
+                rotation: 1,
                 strokeLinecap: 'butt',
                 pathTransition: 'none',
                 pathTransitionDuration: 0.01,
@@ -122,28 +127,31 @@ function AnalogueTimer({
               <ClockCenter />
 
               <div style={{ opacity: 0 }}>
-                <CircularSlider
-                  direction={-1}
-                  hideLabelValue={true}
-                  knobSize={window.innerWidth <= 461 ? 315 : 450}
-                  width={window.innerWidth <= 461 ? 50 : 100}
-                  min={0}
-                  max={maxTimeOut}
-                  trackColor="rgba(0, 0, 0, 0.25)"
-                  progressColorFrom={fillColor}
-                  progressColorTo={fillColor}
-                  progressLineCap="flat"
-                  hideKnob={true}
-                  onChange={(value: number) => {
-                    setPercentage((value / maxTimeOut) * 100)
-                    setTotalSelectedTime(value)
-                    setCurrentTime(value)
-                    const time = new Date()
-                    time.setSeconds(time.getSeconds() + value)
-                    restart(time)
-                    pause()
-                  }}
-                />
+                {timer && (
+                  <CircularSlider
+                    direction={-1}
+                    hideLabelValue={true}
+                    knobSize={window.innerWidth <= 461 ? 315 : 450}
+                    width={window.innerWidth <= 461 ? 50 : 100}
+                    min={0}
+                    max={maxTimeOut}
+                    trackColor="rgba(0, 0, 0, 0.25)"
+                    progressColorFrom={fillColor}
+                    progressColorTo={fillColor}
+                    progressLineCap="flat"
+                    hideKnob={true}
+                    onChange={(value: number) => {
+                      console.log('Value Changed', value)
+                      setPercentage((value / maxTimeOut) * 100)
+                      setTotalSelectedTime(value)
+                      setCurrentTime(value)
+                      const time = new Date()
+                      time.setSeconds(time.getSeconds() + value)
+                      restart(time)
+                      pause()
+                    }}
+                  />
+                )}
               </div>
             </CircularProgressbarWithChildren>
           </CircularBarHolder>

@@ -1,4 +1,8 @@
+import { useRecoilValue } from 'recoil'
 import styled from 'styled-components'
+import { currentTimeValue, maxTime } from '../../atom'
+import { useClockIntervals } from './ClockIntervals'
+import { toFraction } from 'fraction-parser'
 
 const Container = styled.div`
   width: 425px;
@@ -8,7 +12,6 @@ const Container = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  opacity: 0.9;
   @media (max-width: 461px) {
     width: 270px;
     height: 270px;
@@ -18,49 +21,15 @@ const Container = styled.div`
   }
 `
 
-const Number = styled.div`
+const Number = styled.div<{ rotation: number }>`
   --rotation: 0;
   position: absolute;
   width: 100%;
   height: 103%;
   text-align: center;
-  transform: rotate(var(--rotation));
-  color: white;
+  transform: ${({ rotation }) => `rotate(${rotation}deg)`};
+  color: #5d5b5b;
 `
-const Number1 = styled(Number)`
-  --rotation: 30deg;
-`
-const Number2 = styled(Number)`
-  --rotation: 60deg;
-`
-const Number3 = styled(Number)`
-  --rotation: 90deg;
-`
-const Number4 = styled(Number)`
-  --rotation: 120deg;
-`
-const Number5 = styled(Number)`
-  --rotation: 150deg;
-`
-const Number6 = styled(Number)`
-  --rotation: 180deg;
-`
-const Number7 = styled(Number)`
-  --rotation: 210deg;
-`
-const Number8 = styled(Number)`
-  --rotation: 240deg;
-`
-const Number9 = styled(Number)`
-  --rotation: 270deg;
-`
-const Number10 = styled(Number)`
-  --rotation: 300deg;
-`
-const Number11 = styled(Number)`
-  --rotation: 330deg;
-`
-const Number12 = styled(Number)``
 
 const Clockunits = styled.div`
   width: 90%;
@@ -111,54 +80,55 @@ const Mask = styled.div`
   background-color: rgba(35, 35, 35, 1);
 `
 
-const Marking = styled.div`
+const Marking = styled.div<{ rotation: number }>`
   content: '';
   position: absolute;
-  width: 2px;
+  width: 3px;
   height: 100%;
   background: #fff;
   z-index: 0;
   left: 49%;
-`
-const Marking1 = styled(Marking)`
-  transform: rotate(30deg);
-`
-const Marking2 = styled(Marking)`
-  transform: rotate(60deg);
-`
-const Marking3 = styled(Marking)`
-  transform: rotate(90deg);
-`
-const Marking4 = styled(Marking)`
-  transform: rotate(120deg);
-`
-const Marking5 = styled(Marking)`
-  transform: rotate(150deg);
+  transform: ${({ rotation }) => `rotate(${rotation}deg)`};
 `
 
 function ClockUnits({ children }: any) {
+  const currentTime = useRecoilValue(currentTimeValue)
+  const currentMinute = currentTime / 60
+
+  const maximumTime = useRecoilValue(maxTime)
+  const { timerIntervals, timerMarkings } = useClockIntervals(maximumTime)
   return (
     <Container>
-      <Number1>55</Number1>
-      <Number2>50</Number2>
-      <Number3>45</Number3>
-      <Number4>40</Number4>
-      <Number5>35</Number5>
-      <Number6>30</Number6>
-      <Number7>25</Number7>
-      <Number8>20</Number8>
-      <Number9>15</Number9>
-      <Number10>10</Number10>
-      <Number11>5</Number11>
-      <Number12>0</Number12>
+      {timerIntervals.map((time, index) => (
+        <Number
+          rotation={time.rotateDeg}
+          key={index}
+          style={{ color: currentMinute >= time.number ? 'white' : '' }}>
+          {toFraction(time.number, { useUnicodeVulgar: true })}
+        </Number>
+      ))}
 
       <Clockunits>
         <OuterClockFace>
-          <Marking1 />
-          <Marking2 />
-          <Marking3 />
-          <Marking4 />
-          <Marking5 />
+          {timerMarkings.map((mark, index) => {
+            const secondsArrow =
+              mark.rotateDeg !== 30 &&
+              mark.rotateDeg !== 60 &&
+              mark.rotateDeg !== 90 &&
+              mark.rotateDeg !== 120 &&
+              mark.rotateDeg !== 150 &&
+              mark.rotateDeg !== 180
+            return (
+              <Marking
+                key={index}
+                rotation={mark.rotateDeg}
+                style={{
+                  backgroundColor: secondsArrow ? 'grey' : '',
+                  width: secondsArrow ? 1.66 : '',
+                }}
+              />
+            )
+          })}
           <Mask />
           {children}
         </OuterClockFace>
