@@ -41,7 +41,6 @@ const Selected = styled.span`
 `
 
 function DisplaySettings() {
-  //console.log(Object.values(EnumColors))
   const [showColorSettings, setShowColorSettings] = useState(false)
   const toogleColorSettings = () => setShowColorSettings((prev) => !prev)
 

@@ -40,15 +40,15 @@ function App() {
         <Route
           path="/"
           element={
-            isLoggedIn ? (
-              <Home user={user} />
-            ) : (
+            /* isLoggedIn ? ( */
+            <Home user={user} />
+            /* ) : (
               <Auth
                 isLoggedIn={isLoggedIn}
                 setIsLoggedIn={setIsLoggedIn}
                 setUser={setUser}
               />
-            )
+            )*/
           }
         />
         <Route path="/dashboard" element={<Dashboard />} />
