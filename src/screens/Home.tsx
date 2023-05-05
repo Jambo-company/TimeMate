@@ -6,11 +6,15 @@ import 'react-circular-progressbar/dist/styles.css'
 import Navigation from '../components/Navigation'
 import BottomRightOptions from '../components/BottomRightOptions'
 import AnalogueTimer from '../components/ClockTimer/AnalogueTimer'
+import Clock from '../components/DigitalClock'
 
 const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
   height: 100vh;
+  overflow-x: hidden;
+  padding-right: 10px;
+
   @media (max-width: 461px) {
     flex-direction: column;
     align-items: start;
@@ -32,7 +36,8 @@ const CenterContainerClock = styled.div`
 const RightContainer = styled.div`
   height: 100%;
   display: flex;
-  align-items: end;
+  justify-content: space-between;
+  flex-direction: column;
 `
 
 interface HomeProps {
@@ -62,6 +67,7 @@ function Home({ user }: HomeProps) {
         showing={showingNavigation}
         setShowing={setShowingNavigation}
       />
+      {!isRunning && <Clock />}
       <CenterContainer>
         <CenterContainerClock>
           <AnalogueTimer
@@ -75,6 +81,9 @@ function Home({ user }: HomeProps) {
         </CenterContainerClock>
       </CenterContainer>
       <RightContainer>
+        {/*  {!isRunning &&(
+        <Clock />
+      )} */}
         <BottomRightOptions
           user={user}
           isRunning={isRunning}

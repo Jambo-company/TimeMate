@@ -5,6 +5,8 @@ import { faClock, faBars } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
 import ClockUnits from './ClockTimer/ClockUnits'
+import DigitalClock from './DigitalClock'
+import Clock from './DigitalClock'
 
 const AnchorHolder = styled.div`
   display: flex;
@@ -74,37 +76,39 @@ const Overview = styled(motion.div)`
 function Dashboard() {
   const [isOpen, setIsOpen] = useState(false)
   return (
-    <AnimatePresence>
-      <DashBoardContainer>
-        <Logs layout onClick={() => setIsOpen(!isOpen)}>
-          <LogsData>
-            <LogsDataTitle>Overview</LogsDataTitle>
-            <LogsDataSubtitle>
-              Gather your time records at a glace
-            </LogsDataSubtitle>
-          </LogsData>
-        </Logs>
-        {isOpen ? (
-          <FontAwesomeIcon icon={faBars} color="white" size="3x" />
-        ) : (
-          <Overview>
+    <>
+      <AnimatePresence>
+        <DashBoardContainer>
+          <Logs layout onClick={() => setIsOpen(!isOpen)}>
             <LogsData>
-              <LogsDataTitle>Logs</LogsDataTitle>
+              <LogsDataTitle>Overview</LogsDataTitle>
               <LogsDataSubtitle>
-                Watch your records as a timeline
+                Gather your time records at a glace
               </LogsDataSubtitle>
             </LogsData>
-          </Overview>
-        )}
-      </DashBoardContainer>
-      <AnchorHolder>
-        <Link to="/">
-          <HomeAnchor>
-            <FontAwesomeIcon icon={faClock} color="white" size="3x" />
-          </HomeAnchor>
-        </Link>
-      </AnchorHolder>
-    </AnimatePresence>
+          </Logs>
+          {isOpen ? (
+            <FontAwesomeIcon icon={faBars} color="white" size="3x" />
+          ) : (
+            <Overview>
+              <LogsData>
+                <LogsDataTitle>Logs</LogsDataTitle>
+                <LogsDataSubtitle>
+                  Watch your records as a timeline
+                </LogsDataSubtitle>
+              </LogsData>
+            </Overview>
+          )}
+        </DashBoardContainer>
+        <AnchorHolder>
+          <Link to="/">
+            <HomeAnchor>
+              <FontAwesomeIcon icon={faClock} color="white" size="3x" />
+            </HomeAnchor>
+          </Link>
+        </AnchorHolder>
+      </AnimatePresence>
+    </>
   )
 }
 export default Dashboard

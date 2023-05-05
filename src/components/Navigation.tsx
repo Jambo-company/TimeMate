@@ -19,19 +19,21 @@ import { Link } from 'react-router-dom'
 const LeftNav = styled(motion.nav)`
   position: fixed;
   left: 0px;
-  background-color: rgba(50, 50, 65, 0.5);
+  background-color: #2C3333;
   width: 80px;
   height: 100%;
   display: flex;
   align-items: center;
   flex-direction: column;
+  z-index: 9;
+
 `
 
 const LeftNavSettings = styled(motion.aside)`
   position: absolute;
   left: 80px;
   padding: 0 25px;
-  background-color: rgba(50, 50, 65, 0.5);
+  background-color:#2C3333;
   border-left: solid 0.5px rgba(200, 200, 200, 0.45);
   border-top-right-radius: 25px;
   width: 300px;
@@ -40,6 +42,8 @@ const LeftNavSettings = styled(motion.aside)`
   flex-direction: column;
   align-items: start;
   transform-origin: left;
+  z-index: 10;
+
 `
 
 const NavOptionCarrier = styled.div`
