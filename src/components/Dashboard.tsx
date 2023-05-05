@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faClock, faBars } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
+import ClockUnits from './ClockTimer/ClockUnits'
 
 const AnchorHolder = styled.div`
   display: flex;
@@ -86,7 +87,7 @@ function Dashboard() {
         {isOpen ? (
           <FontAwesomeIcon icon={faBars} color="white" size="3x" />
         ) : (
-          <Overview >
+          <Overview>
             <LogsData>
               <LogsDataTitle>Logs</LogsDataTitle>
               <LogsDataSubtitle>
