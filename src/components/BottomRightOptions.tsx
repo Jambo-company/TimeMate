@@ -69,6 +69,8 @@ const TextTimer = styled(motion.span)`
 interface BottomRightOptionsProps {
   user: User | null
   isRunning: boolean
+  alarmPlaying: boolean
+  AlarmHandler: (action: 'Play' | 'Stop') => void
   setShowingNavigation: React.Dispatch<React.SetStateAction<boolean>>
   alarmEnabled: boolean
   toggleAlarm: () => void
@@ -83,6 +85,8 @@ interface BottomRightOptionsProps {
 }
 function BottomRightOptions({
   isRunning,
+  alarmPlaying,
+  AlarmHandler,
   setShowingNavigation,
   alarmEnabled,
   toggleAlarm,
@@ -116,14 +120,6 @@ function BottomRightOptions({
     },
   ]
 
-  useEffect(() => {
-    if (isRunning) {
-      setShowingNavigation(false)
-    } else {
-      setShowingNavigation(true)
-    }
-  }, [isRunning])
-
   const btnAnimation = useAnimation()
 
   const [dashboardRecords, setDashboardRecords] = useState<any>([])
@@ -151,6 +147,10 @@ function BottomRightOptions({
         animate={btnAnimation}
         layoutId="start-pause-btn"
         onClick={async () => {
+          if (alarmPlaying) {
+            console.log('alarmPlaying')
+            AlarmHandler('Stop')
+          }
           if (hours === 0 && minutes === 0 && seconds === 0) {
             return
           }
@@ -173,10 +173,11 @@ function BottomRightOptions({
             btnAnimation.start('show')
           }, 700)
         }}>
-        {isRunning ? 'Pause' : 'Start Focus'}
+        {isRunning ? 'Pause' : alarmPlaying ? 'Stop Alarm' : 'Start Focus'}
       </StartOrPauseBtn>
       <AnimatePresence initial={false}>
         {!isRunning &&
+          !alarmPlaying &&
           switchItemsArray.map((item, index) => (
             <Switcher
               key={index}
@@ -199,7 +200,7 @@ function BottomRightOptions({
             key={index}
             layoutId={index + ''}
             transition={{ delay: 0.3 }}
-            animate={{ fontSize: isRunning ? '85px' : '45px' }}
+            animate={{ fontSize: isRunning || alarmPlaying ? '95px' : '45px' }}
             exit={{ transition: { delay: 0.3 } }}>
             {String(timeCategory).padStart(2, '0')}
           </TextTimer>

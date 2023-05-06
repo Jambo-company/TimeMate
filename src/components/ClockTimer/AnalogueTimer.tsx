@@ -141,7 +141,6 @@ function AnalogueTimer({
                     progressLineCap="flat"
                     hideKnob={true}
                     onChange={(value: number) => {
-                      console.log('Value Changed', value)
                       setPercentage((value / maxTimeOut) * 100)
                       setTotalSelectedTime(value)
                       setCurrentTime(value)

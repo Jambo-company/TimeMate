@@ -1,5 +1,4 @@
 export function useClockIntervals(maxTime: number) {
-  console.log('Clock Interval maxTime', maxTime)
   const tenMin = maxTime === 600
   const halfHr = maxTime === 1800
   const oneHr = maxTime === 3600

@@ -70,15 +70,13 @@ const Navtext = styled.span`
 
 interface NavigationProps {
   showing: boolean
-  setShowing: React.Dispatch<React.SetStateAction<boolean>>
 }
-function Navigation({ showing, setShowing }: NavigationProps) {
+function Navigation({ showing }: NavigationProps) {
   const [moreNavOptions, setMoreNavOptions] = useState(false)
 
   const [isTimeOption, setIsTimeOption] = useState(false)
   const [isRecordsOption, setIsRecordsOption] = useState(false)
   const [isDisplayOption, setIsDisplayOption] = useState(false)
-  const [isLanguageOption, setIsLanguageOption] = useState(false)
   const [isNotificationOption, setIsNotificationOption] = useState(false)
   const onLogoutClick = () => auth.signOut()
 

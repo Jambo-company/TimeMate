@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { User } from 'firebase/auth'
 import styled from 'styled-components'
 import { useTimer } from 'react-timer-hook'
@@ -6,6 +6,10 @@ import 'react-circular-progressbar/dist/styles.css'
 import Navigation from '../components/Navigation'
 import BottomRightOptions from '../components/BottomRightOptions'
 import AnalogueTimer from '../components/ClockTimer/AnalogueTimer'
+
+import useSound from 'use-sound'
+//@ts-ignore
+import alarm from '../sounds/alarm.mp3'
 
 const Wrapper = styled.div`
   display: flex;
@@ -46,6 +50,35 @@ function Home({ user }: HomeProps) {
   const [isNotificationEnabled, setIsNotificationEnabled] = useState(true)
   const toggleNotification = () => setIsNotificationEnabled((prev) => !prev)
 
+  const [alarmPlaying, setAlarmPlaying] = useState(false)
+  console.log(alarmPlaying)
+  const [playSound, { stop }] = useSound(alarm, { interrupt: true })
+  function AlarmHandler(action: 'Play' | 'Stop') {
+    if (action === 'Play') {
+      console.log('Action:', action)
+      playSound()
+      const playAlarm = setInterval(() => {
+        playSound()
+      }, 2000)
+      setAlarmPlaying(true)
+      setTimeout(() => {
+        clearInterval(playAlarm)
+        setAlarmPlaying(false)
+      }, 60000)
+    }
+    if (action === 'Stop') {
+      console.log('Action:', action)
+      stop()
+      setAlarmPlaying(false)
+      const stopAlarm = setInterval(() => {
+        stop()
+      }, 10)
+      setTimeout(() => {
+        clearInterval(stopAlarm)
+      }, 60000)
+    }
+  }
+
   const expiryTimestamp = new Date()
   const { seconds, minutes, hours, isRunning, pause, resume, restart } =
     useTimer({
@@ -53,15 +86,29 @@ function Home({ user }: HomeProps) {
       autoStart: false,
       onExpire: () => {
         console.warn('onExpire called')
+        AlarmHandler('Play')
       },
     })
 
+  useEffect(() => {
+    if (isRunning) {
+      setShowingNavigation(false)
+    } else {
+      setShowingNavigation(true)
+    }
+  }, [isRunning])
+
+  useEffect(() => {
+    if (alarmPlaying) {
+      setShowingNavigation(false)
+    } else{
+      setShowingNavigation(true)
+    }
+  }, [alarmPlaying])
+
   return (
     <Wrapper>
-      <Navigation
-        showing={showingNavigation}
-        setShowing={setShowingNavigation}
-      />
+      <Navigation showing={showingNavigation} />
       <CenterContainer>
         <CenterContainerClock>
           <AnalogueTimer
@@ -78,6 +125,8 @@ function Home({ user }: HomeProps) {
         <BottomRightOptions
           user={user}
           isRunning={isRunning}
+          alarmPlaying={alarmPlaying}
+          AlarmHandler={AlarmHandler}
           setShowingNavigation={setShowingNavigation}
           alarmEnabled={isAlarmEnabled}
           toggleAlarm={toggleAlarm}
