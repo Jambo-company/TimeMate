@@ -3,16 +3,16 @@ import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { faL } from '@fortawesome/free-solid-svg-icons'
 
-const MainContainer = styled.div`
+const MainContainer = styled(motion.div)`
   display: flex;
   align-items: center;
   flex-direction: column;
   gap: 10px;
   position: absolute;
-  left: 90px;
+  left: 120px;
   margin-top: 10px;
 `
-const ClockContainer = styled.div`
+const ClockContainer = styled(motion.div)`
   width: 200px;
   background-color: transparent;
   height: 50px;
@@ -23,7 +23,7 @@ const ClockContainer = styled.div`
   font-size: 50px;
   padding: 20px;
 `
-const ToggleClock = styled.button`
+const ToggleClock = styled(motion.button)`
   width: 100px;
   height: 42px;
   border: none;
@@ -54,10 +54,13 @@ const Clock = () => {
   return (
     <>
       <MainContainer>
-        <ToggleClock onClick={ToggleShowing}>
+        <ToggleClock onClick={ToggleShowing} >
           {showClock ? 'hide time' : 'show time'}
         </ToggleClock>
-        <ClockContainer>{showClock ? timer : null}</ClockContainer>
+        <ClockContainer
+          >
+          {showClock ? timer : null}
+        </ClockContainer>
       </MainContainer>
     </>
   )
