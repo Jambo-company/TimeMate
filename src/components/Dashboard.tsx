@@ -1,38 +1,30 @@
 import styled from 'styled-components'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, useAnimation } from 'framer-motion'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faClock, faBars, faAtom } from '@fortawesome/free-solid-svg-icons'
+import {
+  faClock,
+  faList,
+  faBookBookmark,
+  faGrin,
+} from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import ClockUnits from './ClockTimer/ClockUnits'
-import DigitalClock from './DigitalClock'
-import Clock from './DigitalClock'
 
 const DashBoardContainer = styled(motion.div)`
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: 50vh;
-  /* background-color: blue; */
   padding: 30px;
   overflow-x: hidden;
 `
 const LogsContainer = styled(motion.div)`
-  background-color: cadetblue;
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: 50vh;
   width: 100%;
-`
-
-const OverviewContainer = styled(motion.div)`
-  background-color: chocolate;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 50vh;
-  width: 100%;
+  /* background-color: red; */
 `
 
 const LogsIcon = styled(motion.div)`
@@ -47,35 +39,23 @@ const LogsIcon = styled(motion.div)`
   flex-direction: column;
   gap: 20px;
   cursor: pointer;
-  span {
-    font-size: 20px;
-    display: none;
-  }
-  :hover {
-    span {
-      display: block;
-    }
-  }
 `
+
+const LogsIconText = styled(motion.span)`
+  font-size: 20px;
+  opacity: 1;
+`
+
 const LogsRight = styled(motion.div)`
   display: flex;
   align-items: center;
   width: 88%;
-  height: 49vh;
+  height: 50vh;
   border-radius: 20px;
   background-color: rgba(241, 196, 15, 0.8);
   padding: 0px 50px;
 `
 
-const OverviewLeft = styled(motion.div)`
-  display: flex;
-  align-items: center;
-  width: 88%;
-  height: 49vh;
-  border-radius: 20px;
-  background-color: rgba(241, 196, 15, 0.8);
-  padding: 0px 50px;
-`
 const OverviewData = styled(motion.div)`
   display: flex;
   flex-direction: column;
@@ -103,69 +83,115 @@ const HomeAnchor = styled(motion.div)`
   cursor: pointer;
   position: fixed;
   bottom: 20px;
-  /* left: 10px; */
   right: 20px;
 `
 
+const logsIconVariants = {
+  start: { width: 100, backgroundColor: 'black ' },
+  focus: { width: 120, backgroundColor: '#00425A ' },
+}
+
 const logsVariants = {
-  invisible: {},
-  visible: {},
-  exit: {},
+  invisible: {
+    width: '88%',
+  },
+  visible: {
+    width: '87%',
+  },
 }
 
-const overviewVariants = {
-  invisible: {},
-  visible: {},
-  exit: {},
+const dataTitleVariants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 }
 
+const dataSubtitleVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
+}
+
+const iconTextVariants = {
+  hidden: { opacity: 0, y: -20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
+}
 const Logers = () => {
   const [overview, setOverview] = useState(false)
   const toggleStates = () => setOverview((prev) => !prev)
+
+  const hoverAnimation = useAnimation()
+
   return (
     <AnimatePresence>
       <DashBoardContainer>
-        {!overview ? (
-          <OverviewContainer
-            variants={logsVariants}
-            initial="invisble"
-            animate="visible"
-            exit="exit"
-            layout>
-            <OverviewLeft>
-              <OverviewData>
-                <OverviewDataTitle>Overview</OverviewDataTitle>
-                <OverviewDataSubtitle>
-                  Gather your time records at a glace
-                </OverviewDataSubtitle>
-              </OverviewData>
-            </OverviewLeft>
-            <LogsIcon onClick={toggleStates}>
-              <FontAwesomeIcon icon={faBars} color="white" size="3x" />
-              <span>Logs</span>
-            </LogsIcon>
-          </OverviewContainer>
-        ) : null}
-
         {overview ? (
-          <LogsContainer
-            variants={overviewVariants}
-            initial="invisble"
-            animate="visible"
-            exit="exit"
-            layout>
-            <LogsIcon onClick={toggleStates} whileHover={{scale:1.1, borderRadius:20}}>
-              <FontAwesomeIcon icon={faAtom} color="white" size="3x" />
-              <span>Overview</span>
+          <LogsContainer>
+            <LogsIcon
+              onClick={toggleStates}
+              variants={logsIconVariants}
+              initial="start"
+              whileHover="focus"
+              onHoverStart={() => hoverAnimation.start('visible')}
+              onHoverEnd={() => hoverAnimation.start('invisible')}
+              layout>
+              <FontAwesomeIcon icon={faBookBookmark} color="white" size="2x" />
+              <LogsIconText whileHover={{ scale: 1.1, opacity: 1 }}>
+                Overview
+              </LogsIconText>
             </LogsIcon>
-            <LogsRight>
+
+            <LogsRight variants={logsVariants} animate={hoverAnimation} layout>
               <OverviewData>
-                <OverviewDataTitle>Logs</OverviewDataTitle>
-                <OverviewDataSubtitle>
+                <OverviewDataTitle
+                  variants={dataTitleVariants}
+                  initial="hidden"
+                  animate="visible">
+                  Logs
+                </OverviewDataTitle>
+                <OverviewDataSubtitle
+                  variants={dataSubtitleVariants}
+                  initial="hidden"
+                  animate="visible">
                   Watch your records as a timeline
                 </OverviewDataSubtitle>
               </OverviewData>
             </LogsRight>
+          </LogsContainer>
+        ) : null}
+
+        {!overview ? (
+          <LogsContainer>
+            <LogsRight variants={logsVariants} animate={hoverAnimation} layout>
+              <OverviewData>
+                <OverviewDataTitle
+                  variants={dataTitleVariants}
+                  initial="hidden"
+                  animate="visible">
+                  Overview
+                </OverviewDataTitle>
+                <OverviewDataSubtitle
+                  variants={dataSubtitleVariants}
+                  initial="hidden"
+                  animate="visible">
+                  Gather your time records at a glace
+                </OverviewDataSubtitle>
+              </OverviewData>
+            </LogsRight>
+            <LogsIcon
+              onClick={toggleStates}
+              variants={logsIconVariants}
+              initial="start"
+              whileHover="focus"
+              onHoverStart={() => hoverAnimation.start('visible')}
+              onHoverEnd={() => hoverAnimation.start('invisible')}
+              layout>
+              <FontAwesomeIcon icon={faList} color="white" size="2x" />
+              <LogsIconText
+                variants={iconTextVariants}
+                initial="hidden"
+                animate="visible">
+                Logs
+              </LogsIconText>
+            </LogsIcon>
           </LogsContainer>
         ) : null}
 

@@ -81,9 +81,6 @@ function Home({ user }: HomeProps) {
         </CenterContainerClock>
       </CenterContainer>
       <RightContainer>
-        {/*  {!isRunning &&(
-        <Clock />
-      )} */}
         <BottomRightOptions
           user={user}
           isRunning={isRunning}
