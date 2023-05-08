@@ -12,11 +12,12 @@ import { Link } from 'react-router-dom'
 
 const DashBoardContainer = styled(motion.div)`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 50vh;
+  /* align-items: center; */
+  /* justify-content: space-between; */
+  min-height: 100vh;
   padding: 30px;
   overflow-x: hidden;
+  /* background-color: white; */
 `
 const LogsContainer = styled(motion.div)`
   display: flex;
@@ -84,6 +85,25 @@ const HomeAnchor = styled(motion.div)`
   position: fixed;
   bottom: 20px;
   right: 20px;
+`
+
+const DashboardData = styled(motion.div)`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+  background-color: #011d36;
+  height: 50vh;
+  margin-top: 50px;
+`
+
+const DashboardDataHeader = styled(motion.div)`
+  height: 100px;
+  background-color: red;
+`
+
+const DashboardDataTitle=styled(motion.h1)`
+  font-size: 10px;
 `
 
 const logsIconVariants = {
@@ -200,6 +220,9 @@ const Logers = () => {
             <FontAwesomeIcon icon={faClock} color="white" size="3x" />
           </HomeAnchor>
         </Link>
+        <DashboardData>
+          <DashboardDataHeader></DashboardDataHeader>
+        </DashboardData>
       </DashBoardContainer>
     </AnimatePresence>
   )
