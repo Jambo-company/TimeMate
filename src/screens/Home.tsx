@@ -21,7 +21,6 @@ const Wrapper = styled.div`
   height: 100vh;
   overflow-x: hidden;
   padding-right: 10px;
-
   @media (max-width: 461px) {
     flex-direction: column;
     align-items: start;
@@ -78,6 +77,17 @@ interface HomeProps {
   user: User | null
 }
 function Home({ user }: HomeProps) {
+  useEffect(() => {
+    const unloadCallback = (event: any) => {
+      event.preventDefault()
+      event.returnValue = 'Eeyy!'
+      return 'Eeyy'
+    }
+
+    window.addEventListener('beforeunload', unloadCallback)
+    return () => window.removeEventListener('beforeunload', unloadCallback)
+  }, [])
+
   const [showingNavigation, setShowingNavigation] = useState(true)
 
   const [isAlarmEnabled, setIsAlarmEnabled] = useState(true)

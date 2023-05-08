@@ -5,15 +5,16 @@ import {
   faClock,
   faList,
   faBookBookmark,
-  faGrin,
 } from '@fortawesome/free-solid-svg-icons'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { Chrono } from 'react-chrono'
 
 const DashBoardContainer = styled(motion.div)`
   display: flex;
   /* align-items: center; */
   /* justify-content: space-between; */
+  flex-direction: column;
   min-height: 100vh;
   padding: 30px;
   overflow-x: hidden;
@@ -30,9 +31,9 @@ const LogsContainer = styled(motion.div)`
 
 const LogsIcon = styled(motion.div)`
   color: white;
-  width: 100px;
+  width: 6%;
   height: 50vh;
-  background-color: black;
+  background-color: rgba(0, 0, 0, 1);
   border-radius: 20px;
   display: flex;
   align-items: center;
@@ -50,7 +51,7 @@ const LogsIconText = styled(motion.span)`
 const LogsRight = styled(motion.div)`
   display: flex;
   align-items: center;
-  width: 88%;
+  width: 87.5%;
   height: 50vh;
   border-radius: 20px;
   background-color: rgba(241, 196, 15, 0.8);
@@ -102,21 +103,21 @@ const DashboardDataHeader = styled(motion.div)`
   background-color: red;
 `
 
-const DashboardDataTitle=styled(motion.h1)`
+const DashboardDataTitle = styled(motion.h1)`
   font-size: 10px;
 `
 
 const logsIconVariants = {
-  start: { width: 100, backgroundColor: 'black ' },
-  focus: { width: 120, backgroundColor: '#00425A ' },
+  start: { width: '6%' },
+  focus: { width: '7%', backgroundColor: '#00425A' },
 }
 
 const logsVariants = {
   invisible: {
-    width: '88%',
+    width: '87.5%',
   },
   visible: {
-    width: '87%',
+    width: '86.5%',
   },
 }
 
@@ -126,7 +127,7 @@ const dataTitleVariants = {
 }
 
 const dataSubtitleVariants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 15 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
 }
 
@@ -136,9 +137,28 @@ const iconTextVariants = {
 }
 const Logers = () => {
   const [overview, setOverview] = useState(false)
-  const toggleStates = () => setOverview((prev) => !prev)
+  const toggleStates = () => {
+    setIsAnimating(true)
+    setOverview((prev) => !prev)
+  }
 
+  const [isAnimating, setIsAnimating] = useState(false)
+  useEffect(() => {
+    if (isAnimating) {
+      setTimeout(() => {
+        setIsAnimating(false)
+      }, 700)
+    }
+  }, [isAnimating])
   const hoverAnimation = useAnimation()
+
+  const items = {
+    cardTitle: 'Timemate',
+    cardSubtitle: `Total timer set for ${new Date(
+      Date.now()
+    ).toLocaleDateString()}: 4hours`,
+    date: Date.now(),
+  }
 
   return (
     <AnimatePresence>
@@ -149,17 +169,37 @@ const Logers = () => {
               onClick={toggleStates}
               variants={logsIconVariants}
               initial="start"
-              whileHover="focus"
-              onHoverStart={() => hoverAnimation.start('visible')}
-              onHoverEnd={() => hoverAnimation.start('invisible')}
-              layout>
-              <FontAwesomeIcon icon={faBookBookmark} color="white" size="2x" />
-              <LogsIconText whileHover={{ scale: 1.1, opacity: 1 }}>
-                Overview
-              </LogsIconText>
+              whileHover={!isAnimating ? 'focus' : ''}
+              onHoverStart={() =>
+                !isAnimating && hoverAnimation.start('visible')
+              }
+              onHoverEnd={() =>
+                !isAnimating && hoverAnimation.start('invisible')
+              }
+              layoutId="overview-id"
+              transition={{ duration: 0.45 }}>
+              {!isAnimating && (
+                <>
+                  <FontAwesomeIcon
+                    icon={faBookBookmark}
+                    color="white"
+                    size="2x"
+                  />
+                  <LogsIconText
+                    variants={iconTextVariants}
+                    initial="hidden"
+                    animate="visible">
+                    Overview
+                  </LogsIconText>
+                </>
+              )}
             </LogsIcon>
 
-            <LogsRight variants={logsVariants} animate={hoverAnimation} layout>
+            <LogsRight
+              layoutId="logs-id"
+              transition={{ duration: 0.45 }}
+              variants={logsVariants}
+              animate={hoverAnimation}>
               <OverviewData>
                 <OverviewDataTitle
                   variants={dataTitleVariants}
@@ -180,7 +220,11 @@ const Logers = () => {
 
         {!overview ? (
           <LogsContainer>
-            <LogsRight variants={logsVariants} animate={hoverAnimation} layout>
+            <LogsRight
+              layoutId="overview-id"
+              transition={{ duration: 0.45 }}
+              variants={logsVariants}
+              animate={hoverAnimation}>
               <OverviewData>
                 <OverviewDataTitle
                   variants={dataTitleVariants}
@@ -200,17 +244,26 @@ const Logers = () => {
               onClick={toggleStates}
               variants={logsIconVariants}
               initial="start"
-              whileHover="focus"
-              onHoverStart={() => hoverAnimation.start('visible')}
-              onHoverEnd={() => hoverAnimation.start('invisible')}
-              layout>
-              <FontAwesomeIcon icon={faList} color="white" size="2x" />
-              <LogsIconText
-                variants={iconTextVariants}
-                initial="hidden"
-                animate="visible">
-                Logs
-              </LogsIconText>
+              whileHover={!isAnimating ? 'focus' : ''}
+              onHoverStart={() =>
+                !isAnimating && hoverAnimation.start('visible')
+              }
+              onHoverEnd={() =>
+                !isAnimating && hoverAnimation.start('invisible')
+              }
+              layoutId="logs-id"
+              transition={{ duration: 0.45 }}>
+              {!isAnimating && (
+                <>
+                  <FontAwesomeIcon icon={faList} color="white" size="2x" />
+                  <LogsIconText
+                    variants={iconTextVariants}
+                    initial="hidden"
+                    animate="visible">
+                    Logs
+                  </LogsIconText>
+                </>
+              )}
             </LogsIcon>
           </LogsContainer>
         ) : null}
@@ -223,6 +276,29 @@ const Logers = () => {
         <DashboardData>
           <DashboardDataHeader></DashboardDataHeader>
         </DashboardData>
+        <div
+          style={{
+            width: '700px',
+            height: '500px',
+            padding: 100,
+            overflow: 'scroll',
+          }}>
+          <Chrono
+            items={[1, 2, 3, 4, 5].map(() => items)}
+            mode="VERTICAL"
+            darkMode={true}
+            cardHeight={100}
+            cardWidth={500}
+            hideControls={true}
+            theme={{
+              cardTitleColor: 'yellow',
+              secondary: 'yellow',
+            }}
+            onItemSelected={(data) => console.log(data)}
+            contentDetailsHeight={70}
+            timelinePointShape="diamond"
+          />
+        </div>
       </DashBoardContainer>
     </AnimatePresence>
   )
