@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 
 const Switch = styled(motion.div)<{ isactive: string | undefined }>`
-  width: 35px;
+  width: 37px;
   height: 23px;
   background-color: transparent;
   opacity: ${({ isactive }) => (isactive ? 1 : 0.5)};
@@ -17,7 +17,7 @@ const Switch = styled(motion.div)<{ isactive: string | undefined }>`
 `
 
 const SwitchCircle = styled(motion.div)<{ isactive: string | undefined }>`
-  width: ${({ isactive }) => (isactive ? '45%' : '30%')};
+  width: ${({ isactive }) => (isactive ? '50%' : '37%')};
   height: ${({ isactive }) => (isactive ? '70%' : '50%')};
   margin-left: ${({ isactive }) => !isactive && '2px'};
   border: 1px solid white;

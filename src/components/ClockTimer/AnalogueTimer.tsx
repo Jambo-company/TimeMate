@@ -131,7 +131,7 @@ function AnalogueTimer({
                   <CircularSlider
                     direction={-1}
                     hideLabelValue={true}
-                    knobSize={window.innerWidth <= 461 ? 315 : 450}
+                    knobSize={window.innerWidth <= 461 ? 185 : 450}
                     width={window.innerWidth <= 461 ? 50 : 100}
                     min={0}
                     max={maxTimeOut}
@@ -141,7 +141,6 @@ function AnalogueTimer({
                     progressLineCap="flat"
                     hideKnob={true}
                     onChange={(value: number) => {
-                      console.log('Value Changed', value)
                       setPercentage((value / maxTimeOut) * 100)
                       setTotalSelectedTime(value)
                       setCurrentTime(value)
