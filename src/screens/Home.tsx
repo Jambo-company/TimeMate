@@ -6,6 +6,7 @@ import 'react-circular-progressbar/dist/styles.css'
 import Navigation from '../components/Navigation'
 import BottomRightOptions from '../components/BottomRightOptions'
 import AnalogueTimer from '../components/ClockTimer/AnalogueTimer'
+import Clock from '../components/DigitalClock'
 
 import useSound from 'use-sound'
 //@ts-ignore
@@ -18,6 +19,9 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
   height: 100vh;
+  overflow-x: hidden;
+  padding-right: 10px;
+
   @media (max-width: 461px) {
     flex-direction: column;
     align-items: start;
@@ -42,6 +46,8 @@ const RightContainer = styled.div`
   flex-direction: column;
   justify-content: space-between;
   align-items: end;
+  justify-content: space-between;
+  flex-direction: column;
 `
 const EstimatedTimeContainer = styled.div`
   margin-right: 25px;
@@ -136,6 +142,7 @@ function Home({ user }: HomeProps) {
   return (
     <Wrapper>
       <Navigation showing={showingNavigation} />
+      {!isRunning && <Clock />}
       <CenterContainer>
         <CenterContainerClock>
           <AnalogueTimer
