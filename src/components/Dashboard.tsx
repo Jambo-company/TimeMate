@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { AnimatePresence, motion, useAnimation } from 'framer-motion'
+import { AnimatePresence, color, motion, useAnimation } from 'framer-motion'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faClock,
@@ -7,13 +7,16 @@ import {
   faBookBookmark,
   faGrin,
 } from '@fortawesome/free-solid-svg-icons'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { User } from 'firebase/auth'
+import { dbService } from '../firebase'
 
 const DashBoardContainer = styled(motion.div)`
   display: flex;
   /* align-items: center; */
   /* justify-content: space-between; */
+  flex-direction: column;
   min-height: 100vh;
   padding: 30px;
   overflow-x: hidden;
@@ -32,7 +35,6 @@ const LogsIcon = styled(motion.div)`
   color: white;
   width: 100px;
   height: 50vh;
-  background-color: black;
   border-radius: 20px;
   display: flex;
   align-items: center;
@@ -87,23 +89,69 @@ const HomeAnchor = styled(motion.div)`
   right: 20px;
 `
 
-const DashboardData = styled(motion.div)`
+const DashboardDetails = styled(motion.div)`
   display: flex;
   align-items: center;
-  justify-content: space-between;
   flex-direction: column;
-  background-color: #011d36;
   height: 50vh;
-  margin-top: 50px;
+`
+const DashboardDetailsWrapper = styled(motion.div)`
+  display: flex;
+  flex-direction: column;
+  /* background-color: #012d1c; */
+  width: 56%;
 `
 
-const DashboardDataHeader = styled(motion.div)`
+const DashboardDetailsHeader = styled(motion.div)`
+  margin-top: 100px;
   height: 100px;
-  background-color: red;
 `
 
-const DashboardDataTitle=styled(motion.h1)`
-  font-size: 10px;
+const DashboardDetailsTitle = styled(motion.h1)`
+  font-size: 40px;
+`
+const DashboardDetailsSubTitle = styled(motion.h1)`
+  font-size: 25px;
+  font-weight: 100;
+  margin-top: 20px;
+`
+
+const DayTracker = styled(motion.div)`
+  display: flex;
+  flex-direction: column;
+  height: 200px;
+  margin-top: 100px;
+`
+const DayTrackerTime = styled(motion.span)`
+  color: rgba(241, 196, 15, 0.8);
+  font-size: 95px;
+`
+const DayTrackerInfo = styled(motion.span)`
+  margin-top: 25px;
+  font-size: 33px;
+  font-weight: 100;
+`
+const DailyTracker = styled(motion.div)`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 135px;
+  margin-top: 60px;
+`
+const DailyTrackerObj = styled(motion.div)`
+  display: flex;
+  flex-direction: column;
+  height: 200px;
+  margin-top: 100px;
+`
+const DailyTrackerObjTime = styled(motion.span)`
+  color: rgba(241, 196, 15, 0.8);
+  font-size: 55px;
+`
+const DailyTrackerObjInfo = styled(motion.span)`
+  margin-top: 25px;
+  font-size: 33px;
+  font-weight: 100;
 `
 
 const logsIconVariants = {
@@ -134,12 +182,58 @@ const iconTextVariants = {
   hidden: { opacity: 0, y: -20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
 }
-const Logers = () => {
+
+const scrollVariants = {
+  inactive: {
+    opacity: 0,
+  },
+  active: {
+    opacity: 1,
+    transition: { duration: 8 },
+  },
+  leaving: {
+    opacity: 0,
+  },
+}
+
+interface DashboardProps {
+  user: User | null
+}
+
+const Logers = ({ user }: DashboardProps) => {
+  const [dashboardRecords, setDashboardRecords] = useState<any>([])
   const [overview, setOverview] = useState(false)
+  const hoverAnimation = useAnimation()
   const toggleStates = () => setOverview((prev) => !prev)
 
-  const hoverAnimation = useAnimation()
+  // async function getDashboardData() {
+  //   await dbService.collection('timer').onSnapshot((snapshots) => {
+  //     const dashboard = snapshots.docs.map((doc) => ({
+  //       id: doc.id,
+  //       ...doc.data(),
+  //     }))
+  //     setDashboardRecords(dashboard)
+  //     console.log(dashboard, "my dashboards");
 
+  //   })
+  // }
+
+  const getDashboardData = async () => {
+    if (user) {
+      console.log('ngvjgvhgmvmfjtyghv')
+      const data = await dbService
+        .collection('timer')
+        .where('ownerId', '==', user.uid)
+        .get()
+      console.log(data.docs.map((doc) => doc.data()))
+      data.docs.map((doc) => console.log(doc.data()))
+    }
+  }
+
+  useEffect(() => {
+    getDashboardData()
+  }, [])
+  
   return (
     <AnimatePresence>
       <DashBoardContainer>
@@ -152,7 +246,8 @@ const Logers = () => {
               whileHover="focus"
               onHoverStart={() => hoverAnimation.start('visible')}
               onHoverEnd={() => hoverAnimation.start('invisible')}
-              layout>
+              layout
+              layoutId="name">
               <FontAwesomeIcon icon={faBookBookmark} color="white" size="2x" />
               <LogsIconText whileHover={{ scale: 1.1, opacity: 1 }}>
                 Overview
@@ -164,7 +259,8 @@ const Logers = () => {
                 <OverviewDataTitle
                   variants={dataTitleVariants}
                   initial="hidden"
-                  animate="visible">
+                  animate="visible"
+                  layoutId="name">
                   Logs
                 </OverviewDataTitle>
                 <OverviewDataSubtitle
@@ -220,12 +316,48 @@ const Logers = () => {
             <FontAwesomeIcon icon={faClock} color="white" size="3x" />
           </HomeAnchor>
         </Link>
-        <DashboardData>
-          <DashboardDataHeader></DashboardDataHeader>
-        </DashboardData>
+        <DashboardDetails>
+          <DashboardDetailsWrapper>
+            <DashboardDetailsHeader>
+              <DashboardDetailsTitle>Total Time</DashboardDetailsTitle>
+              <DashboardDetailsSubTitle>
+                For only over 10 minutes records
+              </DashboardDetailsSubTitle>
+            </DashboardDetailsHeader>
+            <DayTracker
+              variants={scrollVariants}
+              initial="inactive"
+              whileInView="active"
+              viewport={{ once: true }}
+              exit="leaving">
+              <DayTrackerTime>0.0 H</DayTrackerTime>
+              <DayTrackerInfo>For today</DayTrackerInfo>
+            </DayTracker>
+            <DailyTracker
+              variants={scrollVariants}
+              initial="inactive"
+              whileInView="active"
+              viewport={{ once: true }}
+              exit="leaving">
+              <DailyTrackerObj>
+                <DailyTrackerObjTime>0.0 H</DailyTrackerObjTime>
+                <DailyTrackerObjInfo>For a week</DailyTrackerObjInfo>
+              </DailyTrackerObj>
+              <DailyTrackerObj>
+                <DailyTrackerObjTime>0.0 H</DailyTrackerObjTime>
+                <DailyTrackerObjInfo>For a Month</DailyTrackerObjInfo>
+              </DailyTrackerObj>
+              <DailyTrackerObj>
+                <DailyTrackerObjTime>0.0 H</DailyTrackerObjTime>
+                <DailyTrackerObjInfo>For whole days</DailyTrackerObjInfo>
+              </DailyTrackerObj>
+            </DailyTracker>
+          </DashboardDetailsWrapper>
+        </DashboardDetails>
       </DashBoardContainer>
     </AnimatePresence>
   )
 }
-
 export default Logers
+
+//                                                      i left te spark
