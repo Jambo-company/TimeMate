@@ -14,13 +14,13 @@ import { dbService } from '../firebase'
 
 const DashBoardContainer = styled(motion.div)`
   display: flex;
-  /* align-items: center; */
-  /* justify-content: space-between; */
   flex-direction: column;
   min-height: 100vh;
   padding: 30px;
   overflow-x: hidden;
-  /* background-color: white; */
+  @media (max-width: 461px) {
+    padding: 20px;
+  }
 `
 const LogsContainer = styled(motion.div)`
   display: flex;
@@ -28,7 +28,9 @@ const LogsContainer = styled(motion.div)`
   justify-content: space-between;
   height: 50vh;
   width: 100%;
-  /* background-color: red; */
+  @media (max-width: 461px) {
+    height: 22vh;
+  }
 `
 
 const LogsIcon = styled(motion.div)`
@@ -43,11 +45,20 @@ const LogsIcon = styled(motion.div)`
   flex-direction: column;
   gap: 20px;
   cursor: pointer;
+  @media (max-width: 461px) {
+    width: 10% !important;
+    height: 20vh;
+    padding: 0px 3px;
+    border-radius: 7px;
+  }
 `
 
 const LogsIconText = styled(motion.span)`
   font-size: 20px;
   opacity: 1;
+  @media (max-width: 461px) {
+    font-size: 10px;
+  }
 `
 
 const LogsRight = styled(motion.div)`
@@ -58,6 +69,12 @@ const LogsRight = styled(motion.div)`
   border-radius: 20px;
   background-color: rgba(241, 196, 15, 0.8);
   padding: 0px 50px;
+  @media (max-width: 461px) {
+    width: 80% !important;
+    height: 20vh;
+    padding: 0px 10px;
+    border-radius: 15px;
+  }
 `
 
 const OverviewData = styled(motion.div)`
@@ -69,11 +86,19 @@ const OverviewData = styled(motion.div)`
 const OverviewDataTitle = styled(motion.div)`
   font-size: 70px;
   font-weight: 600;
+  @media (max-width: 461px) {
+    font-size: 30px !important;
+    font-weight: 500 !important;
+  }
 `
 
 const OverviewDataSubtitle = styled(motion.div)`
   font-size: 20px;
   font-weight: 500;
+  @media (max-width: 461px) {
+    font-size: 15px;
+    font-weight: 500;
+  }
 `
 
 const HomeAnchor = styled(motion.div)`
@@ -88,6 +113,10 @@ const HomeAnchor = styled(motion.div)`
   position: fixed;
   bottom: 20px;
   right: 20px;
+  @media (max-width: 461px) {
+    height: 60px;
+    width: 60px;
+  }
 `
 
 const DashboardDetails = styled(motion.div)`
@@ -99,22 +128,35 @@ const DashboardDetails = styled(motion.div)`
 const DashboardDetailsWrapper = styled(motion.div)`
   display: flex;
   flex-direction: column;
-  /* background-color: #012d1c; */
   width: 56%;
+  @media (max-width: 461px) {
+    width: 100%;
+    padding: 0px 20px;
+    min-height: 95vh;
+  }
 `
 
 const DashboardDetailsHeader = styled(motion.div)`
   margin-top: 100px;
   height: 100px;
+  @media (max-width: 461px) {
+    height: 70px;
+  }
 `
 
 const DashboardDetailsTitle = styled(motion.h1)`
   font-size: 40px;
+  @media (max-width: 461px) {
+    font-size: 25px;
+  }
 `
 const DashboardDetailsSubTitle = styled(motion.h1)`
   font-size: 25px;
   font-weight: 100;
   margin-top: 20px;
+  @media (max-width: 461px) {
+    font-size: 15px;
+  }
 `
 
 const DayTracker = styled(motion.div)`
@@ -122,15 +164,37 @@ const DayTracker = styled(motion.div)`
   flex-direction: column;
   height: 200px;
   margin-top: 100px;
+  @media (max-width: 461px) {
+    margin-top: 20px;
+    height: 90px;
+  }
 `
 const DayTrackerTime = styled(motion.span)`
   color: rgba(241, 196, 15, 0.8);
   font-size: 95px;
+  display: flex;
+  h1 {
+    font-size: 40px;
+    margin-top: 40px;
+    margin-left: 15px;
+  }
+  @media (max-width: 461px) {
+    font-size: 50px;
+    h1 {
+      font-size: 20px;
+      margin-top: 25px;
+      margin-left: 10px;
+    }
+  }
 `
 const DayTrackerInfo = styled(motion.span)`
   margin-top: 25px;
   font-size: 33px;
-  font-weight: 100;
+  font-weight: 200;
+  @media (max-width: 461px) {
+    font-size: 18px;
+    margin-top: 10px;
+  }
 `
 const DailyTracker = styled(motion.div)`
   display: flex;
@@ -138,24 +202,55 @@ const DailyTracker = styled(motion.div)`
   align-items: center;
   height: 135px;
   margin-top: 60px;
+
+  @media (max-width: 461px) {
+    margin-top: 20px;
+    flex-direction: column;
+    align-items: start;
+    min-height: 50vh;
+  }
 `
+
 const DailyTrackerObj = styled(motion.div)`
   display: flex;
   flex-direction: column;
   height: 200px;
   margin-top: 100px;
+  h1 {
+    font-size: 20px;
+    margin-top: 30px;
+    margin-left: 5px;
+  }
+  @media (max-width: 461px) {
+    flex-direction: column;
+    margin-top: 50px;
+    height: 100px;
+    width: 100%;
+    h1 {
+      font-size: 15px;
+      margin-top: 20px;
+      margin-left: 5px;
+    }
+  }
 `
 const DailyTrackerObjTime = styled(motion.span)`
   color: rgba(241, 196, 15, 0.8);
   font-size: 55px;
+  display: flex;
+  width: 300px;
+  @media (max-width: 461px) {
+    width: 100px;
+    display: flex;
+    font-size: 40px;
+  }
 `
 const DailyTrackerObjInfo = styled(motion.span)`
   margin-top: 25px;
   font-size: 33px;
   font-weight: 100;
-`
-const DashboardDataTitle = styled(motion.h1)`
-  font-size: 10px;
+  @media (max-width: 461px) {
+    font-size: 15px;
+  }
 `
 
 const logsIconVariants = {
@@ -210,21 +305,8 @@ const Logers = ({ user }: DashboardProps) => {
   const hoverAnimation = useAnimation()
   const toggleStates = () => setOverview((prev) => !prev)
 
-  // async function getDashboardData() {
-  //   await dbService.collection('timer').onSnapshot((snapshots) => {
-  //     const dashboard = snapshots.docs.map((doc) => ({
-  //       id: doc.id,
-  //       ...doc.data(),
-  //     }))
-  //     setDashboardRecords(dashboard)
-  //     console.log(dashboard, "my dashboards");
-
-  //   })
-  // }
-
   const getDashboardData = async () => {
     if (user) {
-      console.log('ngvjgvhgmvmfjtyghv')
       const data = await dbService
         .collection('timer')
         .where('ownerId', '==', user.uid)
@@ -369,6 +451,7 @@ const Logers = ({ user }: DashboardProps) => {
             <FontAwesomeIcon icon={faClock} color="white" size="3x" />
           </HomeAnchor>
         </Link>
+
         <DashboardDetails>
           <DashboardDetailsWrapper>
             <DashboardDetailsHeader>
@@ -383,7 +466,9 @@ const Logers = ({ user }: DashboardProps) => {
               whileInView="active"
               viewport={{ once: true }}
               exit="leaving">
-              <DayTrackerTime>0.0 H</DayTrackerTime>
+              <DayTrackerTime>
+                0.0 <h1>H</h1>
+              </DayTrackerTime>
               <DayTrackerInfo>For today</DayTrackerInfo>
             </DayTracker>
             <DailyTracker
@@ -393,22 +478,28 @@ const Logers = ({ user }: DashboardProps) => {
               viewport={{ once: true }}
               exit="leaving">
               <DailyTrackerObj>
-                <DailyTrackerObjTime>0.0 H</DailyTrackerObjTime>
+                <DailyTrackerObjTime>
+                  0.0 <h1>H</h1>
+                </DailyTrackerObjTime>
                 <DailyTrackerObjInfo>For a week</DailyTrackerObjInfo>
               </DailyTrackerObj>
               <DailyTrackerObj>
-                <DailyTrackerObjTime>0.0 H</DailyTrackerObjTime>
-                <DailyTrackerObjInfo>For a Month</DailyTrackerObjInfo>
+                <DailyTrackerObjTime>
+                  0.0<h1>H</h1>
+                </DailyTrackerObjTime>
+                <DailyTrackerObjInfo>For a month</DailyTrackerObjInfo>
               </DailyTrackerObj>
               <DailyTrackerObj>
-                <DailyTrackerObjTime>0.0 H</DailyTrackerObjTime>
+                <DailyTrackerObjTime>
+                  0.0 <h1>H</h1>
+                </DailyTrackerObjTime>
                 <DailyTrackerObjInfo>For whole days</DailyTrackerObjInfo>
               </DailyTrackerObj>
             </DailyTracker>
           </DashboardDetailsWrapper>
         </DashboardDetails>
 
-        <div
+        {/* <div
           style={{
             width: '700px',
             height: '500px',
@@ -430,11 +521,9 @@ const Logers = ({ user }: DashboardProps) => {
             contentDetailsHeight={70}
             timelinePointShape="diamond"
           />
-        </div>
+        </div> */}
       </DashBoardContainer>
     </AnimatePresence>
   )
 }
 export default Logers
-
-//                                                      i left te spark
