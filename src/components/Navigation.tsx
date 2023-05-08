@@ -5,7 +5,6 @@ import {
   faClock,
   faDatabase,
   faDisplay,
-  faBell,
   faAngleLeft,
   faSignOut,
 } from '@fortawesome/free-solid-svg-icons'
@@ -18,6 +17,7 @@ import { Link } from 'react-router-dom'
 
 const LeftNav = styled(motion.nav)`
   position: fixed;
+  top: 0px;
   left: 0px;
   background-color: rgba(50, 50, 65, 0.5);
   width: 80px;
@@ -43,7 +43,7 @@ const LeftNavSettings = styled(motion.aside)`
 `
 
 const NavOptionCarrier = styled.div`
-  margin-top: 65px;
+  margin-top: 45px;
   width: 75px;
   height: 80%;
   display: flex;
@@ -77,7 +77,6 @@ function Navigation({ showing }: NavigationProps) {
   const [isTimeOption, setIsTimeOption] = useState(false)
   const [isRecordsOption, setIsRecordsOption] = useState(false)
   const [isDisplayOption, setIsDisplayOption] = useState(false)
-  const [isNotificationOption, setIsNotificationOption] = useState(false)
   const onLogoutClick = () => auth.signOut()
 
   const navItemsArray = [
@@ -99,12 +98,6 @@ function Navigation({ showing }: NavigationProps) {
       text: 'Display',
       isOptionSelected: isDisplayOption,
       setSelectedNavOption: setIsDisplayOption,
-    },
-    {
-      icon: faBell,
-      text: 'Notification',
-      isOptionSelected: isNotificationOption,
-      setSelectedNavOption: setIsNotificationOption,
     },
   ]
 

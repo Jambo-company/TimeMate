@@ -10,6 +10,9 @@ import AnalogueTimer from '../components/ClockTimer/AnalogueTimer'
 import useSound from 'use-sound'
 //@ts-ignore
 import alarm from '../sounds/alarm.mp3'
+import { useRecoilValue } from 'recoil'
+import { selectedTime } from '../atom'
+import { motion } from 'framer-motion'
 
 const Wrapper = styled.div`
   display: flex;
@@ -18,7 +21,7 @@ const Wrapper = styled.div`
   @media (max-width: 461px) {
     flex-direction: column;
     align-items: start;
-    padding-left: 110px;
+    padding-left: 95px;
   }
 `
 
@@ -36,7 +39,33 @@ const CenterContainerClock = styled.div`
 const RightContainer = styled.div`
   height: 100%;
   display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   align-items: end;
+`
+const EstimatedTimeContainer = styled.div`
+  margin-right: 25px;
+  margin-top: 30px;
+  flex-direction: column;
+  @media (max-width: 461px) {
+    margin-bottom: 25px;
+  }
+`
+const EstimatedTimeHeading = styled(motion.h2)`
+  font-size: 25px;
+  text-align: center;
+  @media (max-width: 461px) {
+    font-size: 20px;
+  }
+`
+const EstimatedTime = styled(motion.h4)`
+  margin-top: 17px;
+  font-size: 30px;
+  font-weight: 500;
+  text-align: center;
+  @media (max-width: 461px) {
+    font-size: 25px;
+  }
 `
 
 interface HomeProps {
@@ -45,38 +74,24 @@ interface HomeProps {
 function Home({ user }: HomeProps) {
   const [showingNavigation, setShowingNavigation] = useState(true)
 
-  const [isAlarmEnabled, setIsAlarmEnabled] = useState(false)
+  const [isAlarmEnabled, setIsAlarmEnabled] = useState(true)
   const toggleAlarm = () => setIsAlarmEnabled((prev) => !prev)
   const [isNotificationEnabled, setIsNotificationEnabled] = useState(true)
   const toggleNotification = () => setIsNotificationEnabled((prev) => !prev)
 
   const [alarmPlaying, setAlarmPlaying] = useState(false)
-  console.log(alarmPlaying)
-  const [playSound, { stop }] = useSound(alarm, { interrupt: true })
-  function AlarmHandler(action: 'Play' | 'Stop') {
-    if (action === 'Play') {
-      console.log('Action:', action)
+  const [playSound, { stop }] = useSound(alarm)
+  function AlarmHandler() {
+    playSound()
+    setAlarmPlaying(true)
+    const playAlarm = setInterval(() => {
       playSound()
-      const playAlarm = setInterval(() => {
-        playSound()
-      }, 2000)
-      setAlarmPlaying(true)
       setTimeout(() => {
+        stop()
         clearInterval(playAlarm)
         setAlarmPlaying(false)
-      }, 60000)
-    }
-    if (action === 'Stop') {
-      console.log('Action:', action)
-      stop()
-      setAlarmPlaying(false)
-      const stopAlarm = setInterval(() => {
-        stop()
-      }, 10)
-      setTimeout(() => {
-        clearInterval(stopAlarm)
-      }, 60000)
-    }
+      }, 3000)
+    }, 2000)
   }
 
   const expiryTimestamp = new Date()
@@ -86,9 +101,21 @@ function Home({ user }: HomeProps) {
       autoStart: false,
       onExpire: () => {
         console.warn('onExpire called')
-        AlarmHandler('Play')
+        if (isAlarmEnabled) {
+          AlarmHandler()
+        }
       },
     })
+
+  const totalSelectedTime = useRecoilValue(selectedTime)
+  const [endTime, setEndTime] = useState<number | string>(0)
+  useEffect(() => {
+    const date = new Date(Date.now() + totalSelectedTime * 1000)
+    const time = String(date.getHours()).padStart(2, '0')
+    const minutes = String(date.getMinutes()).padStart(2, '0')
+    const seconds = String(date.getSeconds()).padStart(2, '0')
+    setEndTime(`${time}:${minutes}:${seconds}`)
+  }, [totalSelectedTime])
 
   useEffect(() => {
     if (isRunning) {
@@ -101,7 +128,7 @@ function Home({ user }: HomeProps) {
   useEffect(() => {
     if (alarmPlaying) {
       setShowingNavigation(false)
-    } else{
+    } else {
       setShowingNavigation(true)
     }
   }, [alarmPlaying])
@@ -122,22 +149,28 @@ function Home({ user }: HomeProps) {
         </CenterContainerClock>
       </CenterContainer>
       <RightContainer>
+        <EstimatedTimeContainer>
+          <EstimatedTimeHeading layout>
+            Estimated ending time
+          </EstimatedTimeHeading>
+          <EstimatedTime layout>{endTime + ''}</EstimatedTime>
+        </EstimatedTimeContainer>
+
         <BottomRightOptions
           user={user}
           isRunning={isRunning}
           alarmPlaying={alarmPlaying}
           AlarmHandler={AlarmHandler}
-          setShowingNavigation={setShowingNavigation}
           alarmEnabled={isAlarmEnabled}
           toggleAlarm={toggleAlarm}
           notificationEnabled={isNotificationEnabled}
           toggleNotification={toggleNotification}
-          restart={restart}
           pause={pause}
           resume={resume}
           hours={hours}
           minutes={minutes}
           seconds={seconds}
+          setEndTime={setEndTime}
         />
       </RightContainer>
     </Wrapper>

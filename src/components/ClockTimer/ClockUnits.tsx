@@ -13,11 +13,12 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   @media (max-width: 461px) {
-    width: 270px;
-    height: 270px;
+    width: 275px;
+    height: 275px;
   }
   @media (max-width: 355px) {
     width: 200px;
+    height: 200px;
   }
 `
 

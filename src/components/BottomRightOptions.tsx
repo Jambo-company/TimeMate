@@ -18,6 +18,8 @@ const RightContainerData = styled.div`
   padding-right: 45px;
   @media (max-width: 461px) {
     align-items: start;
+    padding-right: 0px;
+    padding-bottom: 15px;
   }
 `
 const StartOrPauseBtn = styled(motion.button)`
@@ -71,33 +73,32 @@ interface BottomRightOptionsProps {
   isRunning: boolean
   alarmPlaying: boolean
   AlarmHandler: (action: 'Play' | 'Stop') => void
-  setShowingNavigation: React.Dispatch<React.SetStateAction<boolean>>
   alarmEnabled: boolean
   toggleAlarm: () => void
   notificationEnabled: boolean
   toggleNotification: () => void
-  restart: (newExpiryTimestamp: Date, autoStart?: boolean | undefined) => void
   pause: () => void
   resume: () => void
   hours?: number
   minutes?: number
   seconds?: number
+  setEndTime: React.Dispatch<React.SetStateAction<string | number>>
 }
 function BottomRightOptions({
+  user,
   isRunning,
   alarmPlaying,
   AlarmHandler,
-  setShowingNavigation,
   alarmEnabled,
   toggleAlarm,
   notificationEnabled,
   toggleNotification,
-  restart,
   resume,
   pause,
   hours,
   minutes,
   seconds,
+  setEndTime,
 }: BottomRightOptionsProps) {
   const totalSelectedTime = useRecoilValue(selectedTime)
 
@@ -125,6 +126,7 @@ function BottomRightOptions({
   const [dashboardRecords, setDashboardRecords] = useState<any>([])
   async function saveToDashboard(time: number) {
     const newTimerData = {
+      ownerId: user?.uid,
       time,
       startTime: Date.now(),
       endTime: null,
@@ -147,20 +149,18 @@ function BottomRightOptions({
         animate={btnAnimation}
         layoutId="start-pause-btn"
         onClick={async () => {
-          if (alarmPlaying) {
-            console.log('alarmPlaying')
-            AlarmHandler('Stop')
-          }
           if (hours === 0 && minutes === 0 && seconds === 0) {
             return
           }
           if (isRunning) {
             pause()
           } else {
-            console.log('Start timeout for duration of:', totalSelectedTime)
-            console.log('prevTime', prevTime)
+            const date = new Date(Date.now() + totalSelectedTime * 1000)
+            const time = String(date.getHours()).padStart(2, '0')
+            const minutes = String(date.getMinutes()).padStart(2, '0')
+            const seconds = String(date.getSeconds()).padStart(2, '0')
+            setEndTime(`${time}:${minutes}:${seconds}`)
             resume()
-            console.log('nowTime', totalSelectedTime)
             if (prevTime !== totalSelectedTime) {
               console.log('Save Dashboard')
               await saveToDashboard(totalSelectedTime)
@@ -173,25 +173,22 @@ function BottomRightOptions({
             btnAnimation.start('show')
           }, 700)
         }}>
-        {isRunning ? 'Pause' : alarmPlaying ? 'Stop Alarm' : 'Start Focus'}
+        {isRunning ? 'Pause' : 'Start Focus'}
       </StartOrPauseBtn>
       <AnimatePresence initial={false}>
-        {!isRunning &&
-          !alarmPlaying &&
-          switchItemsArray.map((item, index) => (
-            <Switcher
-              key={index}
-              transition={{ delay: 0.3 }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}>
-              <SwitchDataInfo>{item.text}</SwitchDataInfo>
-              <ToogleSwitch
-                switchState={item.switchState}
-                toogleFunction={item.toogleFunction}
-              />
-            </Switcher>
-          ))}
+        {!isRunning && !alarmPlaying && (
+          <Switcher
+            transition={{ delay: 0.3 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}>
+            <SwitchDataInfo>Activate alarm sound</SwitchDataInfo>
+            <ToogleSwitch
+              switchState={alarmEnabled}
+              toogleFunction={toggleAlarm}
+            />
+          </Switcher>
+        )}
       </AnimatePresence>
 
       <TextTimerContainer>
