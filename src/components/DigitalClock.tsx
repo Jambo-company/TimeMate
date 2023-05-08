@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
-import { faL } from '@fortawesome/free-solid-svg-icons'
 
 const MainContainer = styled(motion.div)`
   display: flex;
