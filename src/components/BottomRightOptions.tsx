@@ -21,9 +21,12 @@ const RightContainerData = styled.div`
   right: 0;
   width: inherit;
   @media (max-width: 461px) {
-    align-items: start;
-    padding-right: 0px;
-    padding-bottom: 15px;
+    padding: 10px;
+    width: fit-content;
+  }
+  @media (min-width: 461px) and (max-width: 1024px){
+    /* background-color: red; */
+    width: 35%;
   }
 `
 const StartOrPauseBtn = styled(motion.button)`
@@ -54,13 +57,24 @@ const Switcher = styled(motion.div)`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 190px;
+  width: 90%;
+
+  @media (max-width: 461px) {
+    width: 100%;
+  }
+  @media (min-width: 461px) and (max-width: 1024px) {
+    width: 100%;
+  }
 `
 
 const SwitchDataInfo = styled.span`
-  font-size: 12px;
+  font-size: 25px;
   color: white;
   width: 100%;
+
+  @media (min-width: 461px) and (max-width: 1024px) {
+    font-size: 2vmax;
+  }
 `
 
 const TextTimerContainer = styled.div`
@@ -201,7 +215,14 @@ function BottomRightOptions({
             key={index}
             layoutId={index + ''}
             transition={{ delay: 0.3 }}
-            animate={{ fontSize: isRunning || alarmPlaying ? '95px' : '45px' }}
+            animate={{
+              fontSize:
+                isRunning || alarmPlaying
+                  ? window.innerWidth <= 461
+                    ? '85px'
+                    : '95px'
+                  : '60px',
+            }}
             exit={{ transition: { delay: 0.3 } }}>
             {String(timeCategory).padStart(2, '0')}
           </TextTimer>

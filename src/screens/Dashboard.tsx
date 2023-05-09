@@ -21,6 +21,7 @@ const DashBoardContainer = styled(motion.div)`
   @media (max-width: 461px) {
     padding: 20px;
   }
+
 `
 const LogsContainer = styled(motion.div)`
   display: flex;
@@ -30,6 +31,12 @@ const LogsContainer = styled(motion.div)`
   width: 100%;
   @media (max-width: 461px) {
     height: 22vh;
+  }
+  @media (min-width: 461px) and (max-width: 1024px) {
+    height: 40vh;
+    background-color: red;
+    max-width: 1024px;
+    margin: 0 auto;
   }
 `
 
@@ -51,6 +58,11 @@ const LogsIcon = styled(motion.div)`
     padding: 0px 3px;
     border-radius: 7px;
   }
+  @media (min-width: 461px) and (max-width: 1024px) {
+    height: 40vh;
+    width: 10% !important;
+    border-radius: 10px;
+  }
 `
 
 const LogsIconText = styled(motion.span)`
@@ -58,6 +70,9 @@ const LogsIconText = styled(motion.span)`
   opacity: 1;
   @media (max-width: 461px) {
     font-size: 10px;
+  }
+  @media (min-width: 461px) and (max-width: 1024px) {
+    font-size: 11px;
   }
 `
 
@@ -75,6 +90,10 @@ const LogsRight = styled(motion.div)`
     padding: 0px 10px;
     border-radius: 15px;
   }
+  @media (min-width: 461px) and (max-width: 1024px) {
+    height: 40vh;
+    max-width: 78% !important;
+  }
 `
 
 const OverviewData = styled(motion.div)`
@@ -89,6 +108,9 @@ const OverviewDataTitle = styled(motion.div)`
   @media (max-width: 461px) {
     font-size: 30px !important;
     font-weight: 500 !important;
+  }
+  @media (min-width: 461px) and (max-width: 1024px) {
+    font-size: 45px;
   }
 `
 
@@ -117,6 +139,10 @@ const HomeAnchor = styled(motion.div)`
     height: 60px;
     width: 60px;
   }
+  @media (min-width: 461px) and (max-width: 1024px) {
+    width: 70px;
+    height: 70px;
+  }
 `
 
 const DashboardDetails = styled(motion.div)`
@@ -134,6 +160,9 @@ const DashboardDetailsWrapper = styled(motion.div)`
     padding: 0px 20px;
     min-height: 95vh;
   }
+  @media (min-width: 461px) and (max-width: 1024px) {
+    width: 86%;
+  }
 `
 
 const DashboardDetailsHeader = styled(motion.div)`
@@ -149,6 +178,9 @@ const DashboardDetailsTitle = styled(motion.h1)`
   @media (max-width: 461px) {
     font-size: 25px;
   }
+  @media (min-width: 461px) and (max-width: 1024px) {
+    font-size: 30px;
+  }
 `
 const DashboardDetailsSubTitle = styled(motion.h1)`
   font-size: 25px;
@@ -156,6 +188,9 @@ const DashboardDetailsSubTitle = styled(motion.h1)`
   margin-top: 20px;
   @media (max-width: 461px) {
     font-size: 15px;
+  }
+  @media (min-width: 461px) and (max-width: 1024px) {
+    font-size: 20px;
   }
 `
 
@@ -167,6 +202,9 @@ const DayTracker = styled(motion.div)`
   @media (max-width: 461px) {
     margin-top: 20px;
     height: 90px;
+  }
+  @media (min-width: 461px) and (max-width: 1024px) {
+    margin-top: 40px;
   }
 `
 const DayTrackerTime = styled(motion.span)`
@@ -186,6 +224,14 @@ const DayTrackerTime = styled(motion.span)`
       margin-left: 10px;
     }
   }
+  @media (min-width: 461px) and (max-width: 1024px) {
+    font-size: 60px;
+    h1 {
+      font-size: 20px;
+      margin-top: 30px;
+      margin-left: 10px;
+    }
+  }
 `
 const DayTrackerInfo = styled(motion.span)`
   margin-top: 25px;
@@ -195,6 +241,10 @@ const DayTrackerInfo = styled(motion.span)`
     font-size: 18px;
     margin-top: 10px;
   }
+  @media (min-width: 461px) and (max-width: 1024px) {
+    font-size: 21px;
+    margin-top:20px;
+  }
 `
 const DailyTracker = styled(motion.div)`
   display: flex;
@@ -202,12 +252,14 @@ const DailyTracker = styled(motion.div)`
   align-items: center;
   height: 135px;
   margin-top: 60px;
-
   @media (max-width: 461px) {
     margin-top: 20px;
     flex-direction: column;
     align-items: start;
-    min-height: 50vh;
+  }
+  @media (min-width: 461px) and (max-width: 1024px) {
+    width: 100%;
+    margin-top: 0px;
   }
 `
 
@@ -232,6 +284,9 @@ const DailyTrackerObj = styled(motion.div)`
       margin-left: 5px;
     }
   }
+  @media (min-width: 461px) and (max-width: 1024px) {
+    width: 200px;
+  }
 `
 const DailyTrackerObjTime = styled(motion.span)`
   color: rgba(241, 196, 15, 0.8);
@@ -243,6 +298,9 @@ const DailyTrackerObjTime = styled(motion.span)`
     display: flex;
     font-size: 40px;
   }
+  @media (min-width: 461px) and (max-width: 1024px) {
+    width: 200px;
+  }
 `
 const DailyTrackerObjInfo = styled(motion.span)`
   margin-top: 25px;
@@ -250,6 +308,9 @@ const DailyTrackerObjInfo = styled(motion.span)`
   font-weight: 100;
   @media (max-width: 461px) {
     font-size: 15px;
+  }
+  @media (min-width: 461px) and (max-width: 1024px) {
+    font-size: 21px;
   }
 `
 
@@ -488,12 +549,6 @@ const Logers = ({ user }: DashboardProps) => {
                   0.0<h1>H</h1>
                 </DailyTrackerObjTime>
                 <DailyTrackerObjInfo>For a month</DailyTrackerObjInfo>
-              </DailyTrackerObj>
-              <DailyTrackerObj>
-                <DailyTrackerObjTime>
-                  0.0 <h1>H</h1>
-                </DailyTrackerObjTime>
-                <DailyTrackerObjInfo>For whole days</DailyTrackerObjInfo>
               </DailyTrackerObj>
             </DailyTracker>
           </DashboardDetailsWrapper>

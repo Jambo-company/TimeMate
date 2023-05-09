@@ -18,7 +18,7 @@ import { motion } from 'framer-motion'
 const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  height: 100vh;
+  min-height: 100vh;
   overflow-x: hidden;
   padding-right: 10px;
   @media (max-width: 461px) {
@@ -35,9 +35,18 @@ const CenterContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  @media (max-width: 461px) {
+    margin-top: 150px;
+    margin-bottom: 50px;
+  }
+  @media (min-width: 461px) and (max-width: 1024px) {
+    margin-left: 20%;
+    margin-top: 10%;
+  }
 `
 const CenterContainerClock = styled.div`
   margin-left: 15%;
+  margin-top: 12%;
 `
 const RightContainer = styled.div`
   height: 100%;
@@ -47,29 +56,53 @@ const RightContainer = styled.div`
   align-items: end;
   justify-content: space-between;
   flex-direction: column;
+  width: 20%;
 `
 const EstimatedTimeContainer = styled.div`
-  margin-right: 25px;
-  margin-top: 30px;
-  flex-direction: column;
+  display: flex;
+  align-items: center;
+  width: 35%;
+  padding: 20px;
+  justify-content: space-evenly;
+  position: absolute;
+  bottom: 10px;
+  left: 33%;
   @media (max-width: 461px) {
-    margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+    height: 60px;
+    width: 65%;
+    padding: 0px;
+    position: absolute;
+    top: 55%;
+  }
+
+  @media (min-width: 461px) and (max-width: 1024px) {
+    display: flex;
+    flex-direction: column;
+    left: 10%;
+    width: 40%;
+    height: 100px;
+    display: flex;
+    justify-content: space-between;
   }
 `
 const EstimatedTimeHeading = styled(motion.h2)`
-  font-size: 25px;
-  text-align: center;
+  font-size: 30px;
+  font-weight: 500;
   @media (max-width: 461px) {
-    font-size: 20px;
+    font-size: 25px;
+  }
+  @media (min-width: 461px) and (max-width: 1024px) {
+    font-size: 2vmax;
   }
 `
 const EstimatedTime = styled(motion.h4)`
-  margin-top: 17px;
-  font-size: 30px;
-  font-weight: 500;
-  text-align: center;
-  @media (max-width: 461px) {
-    font-size: 25px;
+  font-size: 2vmax;
+  font-weight: 600;
+  @media (min-width: 461px) and (max-width: 1024px) {
+    font-weight: 500;
+    font-size: 50px;
   }
 `
 
@@ -164,15 +197,14 @@ function Home({ user }: HomeProps) {
             pause={pause}
           />
         </CenterContainerClock>
-      </CenterContainer>
-      <RightContainer>
         <EstimatedTimeContainer>
           <EstimatedTimeHeading layout>
             Estimated ending time
           </EstimatedTimeHeading>
           <EstimatedTime layout>{endTime + ''}</EstimatedTime>
         </EstimatedTimeContainer>
-
+      </CenterContainer>
+      <RightContainer>
         <BottomRightOptions
           user={user}
           isRunning={isRunning}
@@ -194,3 +226,4 @@ function Home({ user }: HomeProps) {
   )
 }
 export default Home
+//

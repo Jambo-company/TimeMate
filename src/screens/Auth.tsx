@@ -24,6 +24,9 @@ const Background = styled.div`
   transform: translate(-50%, -50%);
   left: 50%;
   top: 50%;
+  @media (max-width: 461px) {
+    width: 100px;
+  }
 `
 
 const Shape = styled.div`
@@ -33,9 +36,24 @@ const Shape = styled.div`
   border-radius: 50%;
   /* background-image: url('https://i.pinimg.com/564x/67/b4/d8/67b4d810c2761e51daa5ca5a6ec0761b.jpg'); */
   background: linear-gradient(#1845ad, #23a2f6);
-  left: -130px;
+  left: -100px;
   top: -120px;
   background-size: cover;
+
+  @media (max-width: 461px) {
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    left: -150px;
+    top: -70px;
+  }
+
+  @media (min-width: 461px) and (max-width: 1024px) {
+    width: 150px;
+    height: 150px;
+    left: -50px;
+    top: -70px;
+  }
 `
 const ShapeB = styled.div`
   height: 200px;
@@ -44,11 +62,23 @@ const ShapeB = styled.div`
   border-radius: 50%;
   /* background-image: url('https://i.pinimg.com/236x/7b/6a/fd/7b6afda921051f0721818901e890deb5.jpg'); */
   background: linear-gradient(to right, #ff512f, #f09819);
-
   right: -75px;
   background-size: cover;
   bottom: -120px;
   background-position: top left;
+  @media (max-width: 461px) {
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    left: 153px;
+    bottom: -50px;
+  }
+  @media (min-width: 461px) and (max-width: 1024px) {
+    width: 150px;
+    height: 150px;
+    left: 327px;
+    bottom: -70px;
+  }
 `
 
 const Form = styled.form`
@@ -67,6 +97,15 @@ const Form = styled.form`
   border: 2px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
   padding: 50px 35px;
+  @media (max-width: 461px) {
+    width: 250px;
+    height: 450px;
+  }
+  //tablet
+  @media (min-width: 461px) and (max-width: 1024px) {
+    width: 350px;
+    height: 450px;
+  }
 `
 
 const FormHeader = styled.h3`
