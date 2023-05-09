@@ -13,7 +13,7 @@ export function toHoursAndMinutes(totalSeconds: number) {
 }
 
 /// Get the last dates from today. Example: The dates of the last seven days from today
-function getPeriodDates(i: number) {
+export function getPeriodDates(i: number) {
   const now = new Date()
   return new Date(
     now.getFullYear(),
@@ -33,6 +33,7 @@ export function getLogsPeriod(noOfDays: number) {
 export type IDashboardRecords = {
   ownerId: string
   time: number
+  secondsCounted: number
   startTime: number
   endTime: null
 }
@@ -41,14 +42,21 @@ export function getHoursPerEachDay(
   dashboardData: IDashboardRecords[]
 ) {
   let currentData
-  let hrsPerDay = 0
+  let hrsPerDay = {
+    timeSet: 0,
+    timeCounted: 0,
+  }
   for (let i = 0; i < dashboardData.length; i++) {
     if (
       new Date(dashboardData[i].startTime).toLocaleDateString() ===
       dateToCompareWith
     ) {
       currentData = dashboardData[i]
-      hrsPerDay = hrsPerDay + dashboardData[i].time
+      /* hrsPerDay = hrsPerDay + dashboardData[i].time */
+      hrsPerDay = {
+        timeSet: hrsPerDay.timeSet + dashboardData[i].time,
+        timeCounted: hrsPerDay.timeCounted + dashboardData[i].secondsCounted,
+      }
     }
   }
   return { currentData, hrsPerDay }
@@ -65,9 +73,16 @@ export function getTotalHoursInPeriod(
     recordsArr.push(hrsPerDay)
     return null
   })
-  let totalHrs = 0
+  let totalHrs = {
+    timeSet: 0,
+    timeCounted: 0,
+  }
   for (let i = 0; i < recordsArr.length; i++) {
-    totalHrs = totalHrs + recordsArr[i]
+    /* totalHrs = totalHrs + recordsArr[i] */
+    totalHrs = {
+      timeSet: totalHrs.timeSet + recordsArr[i].timeSet,
+      timeCounted: totalHrs.timeCounted + recordsArr[i].timeCounted,
+    }
   }
   return totalHrs
 }
@@ -75,7 +90,7 @@ export function getTotalHoursInPeriod(
 /// Show hours to the screen format
 export function displayTimeFormat(seconds: number) {
   const { hrs, mins, secs } = toHoursAndMinutes(seconds)
-  return `${hrs ? hrs + 'hrs' : ''}
+  return `${hrs ? (hrs === 1 ? hrs + 'hr' : hrs + 'hrs') : ''}
   ${mins ? mins + 'min' : ''}
 ${secs ? secs + 'sec' : ''}
 ${!hrs && !mins && !secs ? '0sec' : ''}`

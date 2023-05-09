@@ -2,10 +2,15 @@ import React from 'react'
 import {
   IDashboardRecords,
   displayTimeFormat,
+  getPeriodDates,
   getTotalHoursInPeriod,
 } from '../../utilities'
 import styled from 'styled-components'
 import { motion } from 'framer-motion'
+import '../heatmap.css'
+import CalendarHeatmap from 'react-calendar-heatmap'
+import { useRecoilValue } from 'recoil'
+import { displayFillColor } from '../../atom'
 
 const DashboardDetails = styled(motion.div)`
   display: flex;
@@ -57,8 +62,8 @@ const DayTracker = styled(motion.div)`
     height: 90px;
   }
 `
-const DayTrackerTime = styled(motion.span)`
-  color: rgba(241, 196, 15, 0.8);
+const DayTrackerTime = styled(motion.span)<{currentcolor: string}>`
+  color: ${({currentcolor})=> currentcolor};
   font-size: 95px;
   display: flex;
   h1 {
@@ -67,7 +72,7 @@ const DayTrackerTime = styled(motion.span)`
     margin-left: 15px;
   }
   @media (max-width: 461px) {
-    font-size: 50px;
+    font-size: 37px;
     h1 {
       font-size: 20px;
       margin-top: 25px;
@@ -121,24 +126,30 @@ const DailyTrackerObj = styled(motion.div)`
     }
   }
 `
-const DailyTrackerObjTime = styled(motion.span)`
-  color: rgba(241, 196, 15, 0.8);
-  font-size: 55px;
+const DailyTrackerObjTime = styled(motion.span)<{currentcolor: string}>`
+  color: ${({currentcolor})=> currentcolor};
+  font-size: 45px;
   display: flex;
-  width: 300px;
+  width: 400px;
   @media (max-width: 461px) {
-    width: 100px;
+    width: 245px;
     display: flex;
-    font-size: 40px;
+    font-size: 30px;
   }
 `
 const DailyTrackerObjInfo = styled(motion.span)`
   margin-top: 25px;
-  font-size: 33px;
+  font-size: 30px;
   font-weight: 100;
   @media (max-width: 461px) {
     font-size: 15px;
   }
+`
+
+const HeatMapContainer = styled.div`
+  width: 85%;
+  margin-top: 45px;
+  margin-bottom: 20px;
 `
 
 const scrollVariants = {
@@ -147,7 +158,7 @@ const scrollVariants = {
   },
   active: {
     opacity: 1,
-    transition: { duration: 8 },
+    transition: { duration: 4.5 },
   },
   leaving: {
     opacity: 0,
@@ -158,18 +169,41 @@ interface OverviewProps {
   dashboardRecords: IDashboardRecords[]
 }
 function Overview({ dashboardRecords }: OverviewProps) {
+  const heatmapValues = dashboardRecords.map((record) => {
+    return {
+      date: new Date(record.startTime).toLocaleString(),
+      count: record.secondsCounted,
+    }
+  })
+
   const todayRecords = dashboardRecords.filter(
     (record) =>
       new Date(record.startTime).toLocaleDateString() ===
       new Date(Date.now()).toLocaleDateString()
   )
-  let totalHrsToday = 0
+  let totalHrsToday = {
+    timeSet: 0,
+    timeCounted: 0,
+  }
   for (let i = 0; i < todayRecords.length; i++) {
-    totalHrsToday = totalHrsToday + todayRecords[i].time
+    totalHrsToday = {
+      timeSet: totalHrsToday.timeSet + todayRecords[i].time,
+      timeCounted: totalHrsToday.timeCounted + todayRecords[i].secondsCounted,
+    }
   }
 
-  const totalHrsPerWeek = getTotalHoursInPeriod(7, dashboardRecords)
-  const totalHrsPerMonth = getTotalHoursInPeriod(31, dashboardRecords)
+  const { timeSet: timeSetInWeek, timeCounted: timeCountedInWeek } =
+    getTotalHoursInPeriod(7, dashboardRecords)
+  const { timeSet: timeSetInMonth, timeCounted: timeCountedInMonth } =
+    getTotalHoursInPeriod(31, dashboardRecords)
+
+  const currentColor = useRecoilValue(displayFillColor)
+  const root = document.querySelector(':root')
+  //@ts-ignore
+  const rootStyles = getComputedStyle(root)
+  var fill = rootStyles.getPropertyValue('--fill')
+  //@ts-ignore
+  root.style.setProperty('--fill', currentColor)
   return (
     <DashboardDetails>
       <DashboardDetailsWrapper>
@@ -185,7 +219,9 @@ function Overview({ dashboardRecords }: OverviewProps) {
           whileInView="active"
           viewport={{ once: true }}
           exit="leaving">
-          <DayTrackerTime>{displayTimeFormat(totalHrsToday)}</DayTrackerTime>
+          <DayTrackerTime currentcolor={currentColor}>
+            {displayTimeFormat(totalHrsToday.timeCounted)}
+          </DayTrackerTime>
           <DayTrackerInfo>For today</DayTrackerInfo>
         </DayTracker>
         <DailyTracker
@@ -195,18 +231,26 @@ function Overview({ dashboardRecords }: OverviewProps) {
           viewport={{ once: true }}
           exit="leaving">
           <DailyTrackerObj>
-            <DailyTrackerObjTime>
-              {displayTimeFormat(totalHrsPerWeek)}
+            <DailyTrackerObjTime currentcolor={currentColor}>
+              {displayTimeFormat(timeCountedInWeek)}
             </DailyTrackerObjTime>
             <DailyTrackerObjInfo>For a week</DailyTrackerObjInfo>
           </DailyTrackerObj>
           <DailyTrackerObj>
-            <DailyTrackerObjTime>
-              {displayTimeFormat(totalHrsPerMonth)}
+            <DailyTrackerObjTime currentcolor={currentColor}>
+              {displayTimeFormat(timeCountedInMonth)}
             </DailyTrackerObjTime>
             <DailyTrackerObjInfo>For a Month</DailyTrackerObjInfo>
           </DailyTrackerObj>
         </DailyTracker>
+        <HeatMapContainer>
+          <CalendarHeatmap
+            startDate={getPeriodDates(265)}
+            endDate={new Date(Date.now())}
+            onClick={(value) => console.log(value)}
+            values={heatmapValues}
+          />
+        </HeatMapContainer>
       </DashboardDetailsWrapper>
     </DashboardDetails>
   )

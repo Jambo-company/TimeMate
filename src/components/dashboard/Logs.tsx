@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   IDashboardRecords,
   displayTimeFormat,
@@ -8,12 +8,16 @@ import {
 } from '../../utilities'
 import styled from 'styled-components'
 import { Chrono } from 'react-chrono'
+import { TimelineItemModel } from 'react-chrono/dist/models/TimelineItemModel'
+import { useRecoilValue } from 'recoil'
+import { EnumColors, displayFillColor } from '../../atom'
 
-const LogsDetailsWrapper = styled.main`
+const Wrapper = styled.main`
   height: 90vh;
   margin-top: 3%;
   margin-left: 1.5%;
 `
+
 const ChronoContainer = styled.div`
   height: 95%;
   width: 45%;
@@ -30,43 +34,59 @@ interface LogsProps {
 }
 function Logs({ dashboardRecords }: LogsProps) {
   const displayingTime = getTotalHoursInPeriod(7, dashboardRecords)
+  const [itemSelected, setItemSelected] = useState<TimelineItemModel | null>(
+    null
+  )
+  const selectedRecords = dashboardRecords.filter(
+    (record) =>
+      new Date(record.startTime).toLocaleDateString() === itemSelected?.date
+  )
+  const currentColor = useRecoilValue(displayFillColor)
   return (
-    <LogsDetailsWrapper>
+    <Wrapper>
       <ChronoContainer>
         <TimelineHeading>
-          {displayTimeFormat(displayingTime)} this week
+          {displayTimeFormat(displayingTime.timeCounted)} this week
         </TimelineHeading>
         <Chrono
           items={getLogsPeriod(7).map((day) => {
-            const { currentData, hrsPerDay } = getHoursPerEachDay(
-              day,
-              dashboardRecords
-            )
-            function constructItems(date: number | string, time: number) {
+            const { hrsPerDay } = getHoursPerEachDay(day, dashboardRecords)
+            function constructItems(
+              date: number | string,
+              timeSet: number,
+              timeCounted: number
+            ) {
               return {
-                id: currentData?.startTime + '',
                 date,
                 cardTitle: 'Timemate',
-                cardSubtitle: `Total time set in this date, Click to show more`,
-                cardDetailedText: displayTimeFormat(time),
+                cardSubtitle: `Total time set and counted in this date, Click to show more`,
+                cardDetailedText: `Time Set: ${displayTimeFormat(
+                  timeSet
+                )}, Time Counted: ${displayTimeFormat(timeCounted)}`,
               }
             }
-            return constructItems(day, hrsPerDay)
+            return constructItems(day, hrsPerDay.timeSet, hrsPerDay.timeCounted)
           })}
           mode="VERTICAL"
           darkMode={true}
           cardHeight={75}
           hideControls={true}
           theme={{
-            cardTitleColor: 'yellow',
-            secondary: 'yellow',
+            cardTitleColor: currentColor,
+            titleColor: 'white',
+            titleColorActive: 'white',
+            primary: EnumColors.BLACK,
+            secondary: "red",
+            cardDetailsColor: currentColor,
           }}
-          onItemSelected={(data) => console.log(data)}
+          onItemSelected={(data) => {
+            setItemSelected(data)
+          }}
           contentDetailsHeight={70}
           timelinePointShape="diamond"
         />
       </ChronoContainer>
-    </LogsDetailsWrapper>
+    </Wrapper>
   )
 }
 

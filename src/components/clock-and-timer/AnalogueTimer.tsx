@@ -16,6 +16,7 @@ import {
   selectedTime,
 } from '../../atom'
 import ClockUnits from './ClockUnits'
+import { dbService } from '../../firebase'
 
 const AnlogueTimerContainer = styled.div`
   position: relative;
@@ -53,6 +54,8 @@ const TimerArrow = styled.div`
 `
 
 interface AnalogueTimerProps {
+  secondsCounted: number
+  setSecondsCounted: React.Dispatch<React.SetStateAction<number>>
   hours: number
   minutes: number
   seconds: number
@@ -61,6 +64,8 @@ interface AnalogueTimerProps {
   pause: () => void
 }
 function AnalogueTimer({
+  setSecondsCounted,
+  secondsCounted,
   hours,
   minutes,
   seconds,
@@ -88,6 +93,7 @@ function AnalogueTimer({
       setPercentage(0)
     }
   }
+
   useEffect(() => {
     updateTtimer()
   }, [])
@@ -141,6 +147,7 @@ function AnalogueTimer({
                     progressLineCap="flat"
                     hideKnob={true}
                     onChange={(value: number) => {
+                      setSecondsCounted(0)
                       setPercentage((value / maxTimeOut) * 100)
                       setTotalSelectedTime(value)
                       setCurrentTime(value)
