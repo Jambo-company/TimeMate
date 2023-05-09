@@ -14,6 +14,7 @@ import alarm from '../sounds/alarm.mp3'
 import { useRecoilValue } from 'recoil'
 import { selectedTime } from '../atom'
 import { motion } from 'framer-motion'
+import { dbService } from '../firebase'
 
 const Wrapper = styled.div`
   display: flex;
@@ -144,18 +145,47 @@ function Home({ user }: HomeProps) {
     }, 2000)
   }
 
+  const [secondsCounted, setSecondsCounted] = useState(0)
+  const [latest, setLatest] = useState<{ id: string } | null>(null)
+  async function updateTimerRecord() {
+    await dbService
+      .collection('timer')
+      .orderBy('startTime', 'desc')
+      .onSnapshot((snapshots) => {
+        const dashboard = snapshots.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+        setLatest(dashboard[0])
+      })
+    if (latest) {
+      await dbService.doc(`timer/${latest.id}`).update({
+        secondsCounted,
+      })
+    }
+  }
+
   const expiryTimestamp = new Date()
   const { seconds, minutes, hours, isRunning, pause, resume, restart } =
     useTimer({
       expiryTimestamp,
       autoStart: false,
-      onExpire: () => {
+      onExpire: async () => {
+        await updateTimerRecord()
         console.warn('onExpire called')
         if (isAlarmEnabled) {
           AlarmHandler()
         }
+        setSecondsCounted(0)
       },
     })
+
+  useEffect(() => {
+    if (isRunning) {
+      setSecondsCounted((prev) => prev + 1)
+      console.log('secondsCounted', secondsCounted)
+    }
+  }, [seconds, minutes])
 
   const totalSelectedTime = useRecoilValue(selectedTime)
   const [endTime, setEndTime] = useState<number | string>(0)
@@ -190,6 +220,8 @@ function Home({ user }: HomeProps) {
       <CenterContainer>
         <CenterContainerClock>
           <AnalogueTimer
+            secondsCounted={secondsCounted}
+            setSecondsCounted={setSecondsCounted}
             hours={hours}
             minutes={minutes}
             seconds={seconds}
@@ -208,6 +240,8 @@ function Home({ user }: HomeProps) {
       <RightContainer>
         <BottomRightOptions
           user={user}
+          secondsCounted={secondsCounted}
+          updateTimerRecord={updateTimerRecord}
           isRunning={isRunning}
           alarmPlaying={alarmPlaying}
           AlarmHandler={AlarmHandler}

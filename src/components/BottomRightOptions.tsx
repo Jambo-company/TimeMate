@@ -94,6 +94,8 @@ const TextTimer = styled(motion.span)`
 
 interface BottomRightOptionsProps {
   user: User | null
+  secondsCounted: number
+  updateTimerRecord(): Promise<void>
   isRunning: boolean
   alarmPlaying: boolean
   AlarmHandler: (action: 'Play' | 'Stop') => void
@@ -109,7 +111,9 @@ interface BottomRightOptionsProps {
   setEndTime: React.Dispatch<React.SetStateAction<string | number>>
 }
 function BottomRightOptions({
+  secondsCounted,
   user,
+  updateTimerRecord,
   isRunning,
   alarmPlaying,
   AlarmHandler,
@@ -153,6 +157,7 @@ function BottomRightOptions({
       ownerId: user?.uid,
       time,
       startTime: Date.now(),
+      secondsCounted: 0,
       endTime: null,
     }
     await dbService.collection('timer').add(newTimerData)
@@ -196,6 +201,9 @@ function BottomRightOptions({
           setTimeout(() => {
             btnAnimation.start('show')
           }, 700)
+          console.log('Update Previous')
+          console.log('secondsCounted', secondsCounted)
+          await updateTimerRecord()
         }}>
         {isRunning ? 'Pause' : 'Start Focus'}
       </StartOrPauseBtn>

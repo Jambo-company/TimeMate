@@ -13,6 +13,8 @@ import { dbService } from '../firebase'
 import { IDashboardRecords } from '../utilities'
 import Overview from '../components/dashboard/Overview'
 import Logs from '../components/dashboard/Logs'
+import { useRecoilValue } from 'recoil'
+import { displayFillColor } from '../atom'
 
 const DashBoardContainer = styled(motion.div)`
   display: flex;
@@ -78,13 +80,13 @@ const LogsIconText = styled(motion.span)`
   }
 `
 
-const LogsRight = styled(motion.div)`
+const LogsRight = styled(motion.div)<{ currentcolor: string }>`
   display: flex;
   align-items: center;
   width: 87.5%;
   height: 45vh;
   border-radius: 20px;
-  background-color: rgba(241, 196, 15, 0.8);
+  background-color: ${({ currentcolor }) => currentcolor};
   padding: 0px 50px;
   @media (max-width: 461px) {
     width: 80% !important;
@@ -125,11 +127,11 @@ const OverviewDataSubtitle = styled(motion.div)`
   }
 `
 
-const HomeAnchor = styled(motion.div)`
+const HomeAnchor = styled(motion.div)<{ currentcolor: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(241, 196, 15, 0.8);
+  background-color: ${({ currentcolor }) => currentcolor};
   height: 100px;
   width: 100px;
   border-radius: 50%;
@@ -149,8 +151,18 @@ const HomeAnchor = styled(motion.div)`
 `
 
 const logsIconVariants = {
-  start: { width: '6%' },
-  focus: { width: '7%', backgroundColor: '#00425A' },
+  start: {
+    width: '6%',
+    backgroundColor: 'rgba(0, 0, 0, 1)',
+    borderRadius: 20,
+    opacity: 1,
+  },
+  focus: { width: '7%', backgroundColor: '#00425A', borderRadius: 20 },
+  clickedStart: {
+    width: '7%',
+    backgroundColor: 'rgba(0, 35, 55, 0.5)',
+    borderRadius: 20,
+  },
 }
 
 const logsVariants = {
@@ -215,15 +227,19 @@ const Logers = ({ user }: DashboardProps) => {
     }
   }, [isAnimating])
 
+  const currentColor = useRecoilValue(displayFillColor)
+
   return (
     <AnimatePresence>
       <DashBoardContainer>
         {!overview ? (
           <LogsContainer>
             <LogsIcon
+              transition={{ duration: 0.65, ease: 'easeOut' }}
               onClick={toggleStates}
               variants={logsIconVariants}
-              initial="start"
+              initial={isAnimating ? 'clickedStart' : 'start'}
+              animate="start"
               whileHover={!isAnimating ? 'focus' : ''}
               onHoverStart={() =>
                 !isAnimating && hoverAnimation.start('visible')
@@ -231,8 +247,7 @@ const Logers = ({ user }: DashboardProps) => {
               onHoverEnd={() =>
                 !isAnimating && hoverAnimation.start('invisible')
               }
-              layoutId="overview-id"
-              transition={{ duration: 0.45 }}>
+              layoutId="overview-id">
               {!isAnimating && (
                 <>
                   <FontAwesomeIcon
@@ -251,8 +266,10 @@ const Logers = ({ user }: DashboardProps) => {
             </LogsIcon>
 
             <LogsRight
+              transition={{ duration: 0.65, ease: 'easeOut' }}
+              currentcolor={currentColor}
               layoutId="logs-id"
-              transition={{ duration: 0.45 }}
+              initial={{ borderRadius: 20 }}
               variants={logsVariants}
               animate={hoverAnimation}>
               <OverviewData>
@@ -277,8 +294,10 @@ const Logers = ({ user }: DashboardProps) => {
         {overview ? (
           <LogsContainer>
             <LogsRight
+              transition={{ duration: 0.65, ease: 'easeOut' }}
+              currentcolor={currentColor}
               layoutId="overview-id"
-              transition={{ duration: 0.45 }}
+              initial={{ borderRadius: 20 }}
               variants={logsVariants}
               animate={hoverAnimation}>
               <OverviewData>
@@ -297,9 +316,11 @@ const Logers = ({ user }: DashboardProps) => {
               </OverviewData>
             </LogsRight>
             <LogsIcon
+              transition={{ duration: 0.65, ease: 'easeOut' }}
               onClick={toggleStates}
               variants={logsIconVariants}
-              initial="start"
+              initial={isAnimating ? 'clickedStart' : 'start'}
+              animate="start"
               whileHover={!isAnimating ? 'focus' : ''}
               onHoverStart={() =>
                 !isAnimating && hoverAnimation.start('visible')
@@ -307,8 +328,7 @@ const Logers = ({ user }: DashboardProps) => {
               onHoverEnd={() =>
                 !isAnimating && hoverAnimation.start('invisible')
               }
-              layoutId="logs-id"
-              transition={{ duration: 0.45 }}>
+              layoutId="logs-id">
               {!isAnimating && (
                 <>
                   <FontAwesomeIcon icon={faList} color="white" size="2x" />
@@ -325,7 +345,7 @@ const Logers = ({ user }: DashboardProps) => {
         ) : null}
 
         <Link to="/">
-          <HomeAnchor whileHover={{ scale: 1.1 }}>
+          <HomeAnchor currentcolor={currentColor} whileHover={{ scale: 1.1 }}>
             <FontAwesomeIcon icon={faClock} color="white" size="3x" />
           </HomeAnchor>
         </Link>
