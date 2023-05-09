@@ -54,9 +54,8 @@ const RightContainer = styled.div`
   flex-direction: column;
   justify-content: space-between;
   align-items: end;
-  justify-content: space-between;
-  flex-direction: column;
   width: 20%;
+  background-color: #496c38;
 `
 const EstimatedTimeContainer = styled.div`
   display: flex;
@@ -67,6 +66,7 @@ const EstimatedTimeContainer = styled.div`
   position: absolute;
   bottom: 10px;
   left: 33%;
+  
   @media (max-width: 461px) {
     display: flex;
     flex-direction: column;
@@ -75,6 +75,7 @@ const EstimatedTimeContainer = styled.div`
     padding: 0px;
     position: absolute;
     top: 55%;
+    left: 28%;
   }
 
   @media (min-width: 461px) and (max-width: 1024px) {
@@ -91,7 +92,7 @@ const EstimatedTimeHeading = styled(motion.h2)`
   font-size: 30px;
   font-weight: 500;
   @media (max-width: 461px) {
-    font-size: 25px;
+    font-size: 20px;
   }
   @media (min-width: 461px) and (max-width: 1024px) {
     font-size: 2vmax;

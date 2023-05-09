@@ -84,7 +84,7 @@ function TimeSettings() {
         )}
       </AnimatePresence>
 
-      <SettingHeading
+      {/* <SettingHeading
         title="Set interval per rotation"
         settingOpen={showIntervalSetttings}
         toogleSetings={toogleIntervalSettings}
@@ -102,7 +102,8 @@ function TimeSettings() {
             ))}
           </IntervalSettings>
         )}
-      </AnimatePresence>
+      </AnimatePresence> */}
+
     </TimeSettingsWrapper>
   )
 }

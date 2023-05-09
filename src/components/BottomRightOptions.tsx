@@ -16,11 +16,16 @@ const RightContainerData = styled.div`
   gap: 20px;
   padding-bottom: 25px;
   padding-right: 45px;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: inherit;
+  /* background-color: red; */
   @media (max-width: 461px) {
     padding: 10px;
-    width: fit-content;
+    width: 100%;
   }
-  @media (min-width: 461px) and (max-width: 1024px){
+  @media (min-width: 461px) and (max-width: 1024px) {
     /* background-color: red; */
     width: 35%;
   }
@@ -51,10 +56,10 @@ const startOrPauseVars = {
 
 const Switcher = styled(motion.div)`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   width: 90%;
-
+  /* background-color: black; */
   @media (max-width: 461px) {
     width: 100%;
   }
@@ -64,12 +69,17 @@ const Switcher = styled(motion.div)`
 `
 
 const SwitchDataInfo = styled.span`
-  font-size: 25px;
+  font-size: 18px;
   color: white;
-  width: 100%;
+  /* width: 100%; */
+  /* background-color: yellow; */
+  margin-right: 10%;
 
   @media (min-width: 461px) and (max-width: 1024px) {
     font-size: 2vmax;
+  }
+  @media (max-width: 461px) {
+    font-size: 15px;
   }
 `
 

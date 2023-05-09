@@ -13,11 +13,16 @@ const LogsDetailsWrapper = styled.main`
   height: 90vh;
   margin-top: 3%;
   margin-left: 1.5%;
+  @media (max-width: 461px) {
+  }
 `
 const ChronoContainer = styled.div`
   height: 95%;
   width: 45%;
   margin-left: -2.5%;
+  @media (max-width: 461px) {
+    width: 100%;
+  }
 `
 const TimelineHeading = styled.h2`
   font-size: 27px;

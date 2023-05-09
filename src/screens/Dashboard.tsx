@@ -36,7 +36,7 @@ const LogsContainer = styled(motion.div)`
   }
   @media (min-width: 461px) and (max-width: 1024px) {
     height: 40vh;
-    background-color: red;
+    /* background-color: red; */
     max-width: 1024px;
     margin: 0 auto;
   }
@@ -134,6 +134,7 @@ const HomeAnchor = styled(motion.div)`
   width: 100px;
   border-radius: 50%;
   cursor: pointer;
+  z-index: 2;
   position: fixed;
   bottom: 20px;
   right: 20px;

@@ -86,7 +86,6 @@ const DayTrackerInfo = styled(motion.span)`
 `
 const DailyTracker = styled(motion.div)`
   display: flex;
-  justify-content: space-between;
   align-items: center;
   height: 135px;
   margin-top: 60px;
@@ -96,6 +95,7 @@ const DailyTracker = styled(motion.div)`
     flex-direction: column;
     align-items: start;
     min-height: 50vh;
+    /* background-color: peachpuff; */
   }
 `
 

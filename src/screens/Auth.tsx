@@ -8,14 +8,12 @@ import {
   GoogleAuthProvider,
   User,
 } from 'firebase/auth'
-
 import { auth } from '../firebase'
-
 import { AnimatePresence } from 'framer-motion'
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGoogle } from '@fortawesome/free-brands-svg-icons'
 import { useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
 
 const Background = styled.div`
   width: 430px;
@@ -34,11 +32,11 @@ const Shape = styled.div`
   width: 200px;
   position: absolute;
   border-radius: 50%;
-  /* background-image: url('https://i.pinimg.com/564x/67/b4/d8/67b4d810c2761e51daa5ca5a6ec0761b.jpg'); */
   background: linear-gradient(#1845ad, #23a2f6);
   left: -100px;
   top: -120px;
   background-size: cover;
+  background-position: center center;
 
   @media (max-width: 461px) {
     width: 100px;
@@ -60,7 +58,6 @@ const ShapeB = styled.div`
   width: 200px;
   position: absolute;
   border-radius: 50%;
-  /* background-image: url('https://i.pinimg.com/236x/7b/6a/fd/7b6afda921051f0721818901e890deb5.jpg'); */
   background: linear-gradient(to right, #ff512f, #f09819);
   right: -75px;
   background-size: cover;
@@ -73,6 +70,7 @@ const ShapeB = styled.div`
     left: 153px;
     bottom: -50px;
   }
+
   @media (min-width: 461px) and (max-width: 1024px) {
     width: 150px;
     height: 150px;
@@ -150,11 +148,10 @@ const FormLoginBtn = styled.input`
   margin-bottom: 40px;
   cursor: pointer;
 `
-const FormSocialLoginBtn = styled.div<{ name: string }>`
+const FormSocialLoginBtn = styled(motion.div)<{ name: string }>`
   display: flex;
   align-items: center;
   justify-content: space-evenly;
-  /* background: red; */
   width: 150px;
   border-radius: 10px;
   padding: 5px 10px 10px 5px;
@@ -256,7 +253,7 @@ const Auth = ({ isLoggedIn, setIsLoggedIn, setUser }: ILogInProp) => {
         <ShapeB />
       </Background>
       <Form onSubmit={onSubmit}>
-        <FormHeader>Login Here</FormHeader>
+        <FormHeader>Welcome Login Here</FormHeader>
         <FormInput
           type="text"
           name="email"
@@ -278,7 +275,10 @@ const Auth = ({ isLoggedIn, setIsLoggedIn, setUser }: ILogInProp) => {
           value={newAccount ? 'Create A New Account' : 'Login'}
         />
         <AnimatePresence>
-          <FormSocialLoginBtn onClick={SocialLogin} name="google">
+          <FormSocialLoginBtn
+            onClick={SocialLogin}
+            name="google"
+            whileTap={{ scale: 0.8 }} whileHover={{scale:1.1}}>
             <FontAwesomeIcon icon={faGoogle} color="white" size="2x" />
             <FormSocialLoginSpan>Google</FormSocialLoginSpan>
           </FormSocialLoginBtn>
