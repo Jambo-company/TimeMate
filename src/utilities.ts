@@ -63,6 +63,7 @@ export function getTotalHoursInPeriod(
   getLogsPeriod(noOfDays).map((day) => {
     const { hrsPerDay } = getHoursPerEachDay(day, dashboard)
     recordsArr.push(hrsPerDay)
+    return null
   })
   let totalHrs = 0
   for (let i = 0; i < recordsArr.length; i++) {

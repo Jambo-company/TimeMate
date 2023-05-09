@@ -20,6 +20,9 @@ const DashBoardContainer = styled(motion.div)`
   min-height: 100vh;
   padding: 30px;
   overflow-x: hidden;
+  @media (max-width: 461px) {
+    padding: 20px;
+  }
 `
 const LogsContainer = styled(motion.div)`
   display: flex;
@@ -27,6 +30,9 @@ const LogsContainer = styled(motion.div)`
   justify-content: space-between;
   height: 47vh;
   width: 100%;
+  @media (max-width: 461px) {
+    height: 22vh;
+  }
 `
 
 const LogsIcon = styled(motion.div)`
@@ -41,11 +47,20 @@ const LogsIcon = styled(motion.div)`
   flex-direction: column;
   gap: 20px;
   cursor: pointer;
+  @media (max-width: 461px) {
+    width: 10% !important;
+    height: 20vh;
+    padding: 0px 3px;
+    border-radius: 7px;
+  }
 `
 
 const LogsIconText = styled(motion.span)`
   font-size: 20px;
   opacity: 1;
+  @media (max-width: 461px) {
+    font-size: 10px;
+  }
 `
 
 const LogsRight = styled(motion.div)`
@@ -56,6 +71,12 @@ const LogsRight = styled(motion.div)`
   border-radius: 20px;
   background-color: rgba(241, 196, 15, 0.8);
   padding: 0px 50px;
+  @media (max-width: 461px) {
+    width: 80% !important;
+    height: 20vh;
+    padding: 0px 10px;
+    border-radius: 15px;
+  }
 `
 
 const OverviewData = styled(motion.div)`
@@ -67,11 +88,19 @@ const OverviewData = styled(motion.div)`
 const OverviewDataTitle = styled(motion.div)`
   font-size: 70px;
   font-weight: 600;
+  @media (max-width: 461px) {
+    font-size: 30px !important;
+    font-weight: 500 !important;
+  }
 `
 
 const OverviewDataSubtitle = styled(motion.div)`
   font-size: 20px;
   font-weight: 500;
+  @media (max-width: 461px) {
+    font-size: 15px;
+    font-weight: 500;
+  }
 `
 
 const HomeAnchor = styled(motion.div)`
@@ -86,6 +115,10 @@ const HomeAnchor = styled(motion.div)`
   position: fixed;
   bottom: 20px;
   right: 20px;
+  @media (max-width: 461px) {
+    height: 60px;
+    width: 60px;
+  }
 `
 
 const logsIconVariants = {
