@@ -16,10 +16,6 @@ const RightContainerData = styled.div`
   gap: 20px;
   padding-bottom: 25px;
   padding-right: 45px;
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  width: inherit;
   @media (max-width: 461px) {
     padding: 10px;
     width: fit-content;

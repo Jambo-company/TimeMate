@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { AnimatePresence, color, motion, useAnimation } from 'framer-motion'
+import { AnimatePresence, motion, useAnimation } from 'framer-motion'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faClock,
@@ -8,9 +8,11 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Chrono } from 'react-chrono'
 import { User } from 'firebase/auth'
 import { dbService } from '../firebase'
+import { IDashboardRecords } from '../utilities'
+import Overview from '../components/dashboard/Overview'
+import Logs from '../components/dashboard/Logs'
 
 const DashBoardContainer = styled(motion.div)`
   display: flex;
@@ -27,7 +29,7 @@ const LogsContainer = styled(motion.div)`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 50vh;
+  height: 47vh;
   width: 100%;
   @media (max-width: 461px) {
     height: 22vh;
@@ -43,7 +45,7 @@ const LogsContainer = styled(motion.div)`
 const LogsIcon = styled(motion.div)`
   color: white;
   width: 6%;
-  height: 50vh;
+  height: 45vh;
   background-color: rgba(0, 0, 0, 1);
   border-radius: 20px;
   display: flex;
@@ -80,7 +82,7 @@ const LogsRight = styled(motion.div)`
   display: flex;
   align-items: center;
   width: 87.5%;
-  height: 50vh;
+  height: 45vh;
   border-radius: 20px;
   background-color: rgba(241, 196, 15, 0.8);
   padding: 0px 50px;
@@ -145,175 +147,6 @@ const HomeAnchor = styled(motion.div)`
   }
 `
 
-const DashboardDetails = styled(motion.div)`
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  height: 50vh;
-`
-const DashboardDetailsWrapper = styled(motion.div)`
-  display: flex;
-  flex-direction: column;
-  width: 56%;
-  @media (max-width: 461px) {
-    width: 100%;
-    padding: 0px 20px;
-    min-height: 95vh;
-  }
-  @media (min-width: 461px) and (max-width: 1024px) {
-    width: 86%;
-  }
-`
-
-const DashboardDetailsHeader = styled(motion.div)`
-  margin-top: 100px;
-  height: 100px;
-  @media (max-width: 461px) {
-    height: 70px;
-  }
-`
-
-const DashboardDetailsTitle = styled(motion.h1)`
-  font-size: 40px;
-  @media (max-width: 461px) {
-    font-size: 25px;
-  }
-  @media (min-width: 461px) and (max-width: 1024px) {
-    font-size: 30px;
-  }
-`
-const DashboardDetailsSubTitle = styled(motion.h1)`
-  font-size: 25px;
-  font-weight: 100;
-  margin-top: 20px;
-  @media (max-width: 461px) {
-    font-size: 15px;
-  }
-  @media (min-width: 461px) and (max-width: 1024px) {
-    font-size: 20px;
-  }
-`
-
-const DayTracker = styled(motion.div)`
-  display: flex;
-  flex-direction: column;
-  height: 200px;
-  margin-top: 100px;
-  @media (max-width: 461px) {
-    margin-top: 20px;
-    height: 90px;
-  }
-  @media (min-width: 461px) and (max-width: 1024px) {
-    margin-top: 40px;
-  }
-`
-const DayTrackerTime = styled(motion.span)`
-  color: rgba(241, 196, 15, 0.8);
-  font-size: 95px;
-  display: flex;
-  h1 {
-    font-size: 40px;
-    margin-top: 40px;
-    margin-left: 15px;
-  }
-  @media (max-width: 461px) {
-    font-size: 50px;
-    h1 {
-      font-size: 20px;
-      margin-top: 25px;
-      margin-left: 10px;
-    }
-  }
-  @media (min-width: 461px) and (max-width: 1024px) {
-    font-size: 60px;
-    h1 {
-      font-size: 20px;
-      margin-top: 30px;
-      margin-left: 10px;
-    }
-  }
-`
-const DayTrackerInfo = styled(motion.span)`
-  margin-top: 25px;
-  font-size: 33px;
-  font-weight: 200;
-  @media (max-width: 461px) {
-    font-size: 18px;
-    margin-top: 10px;
-  }
-  @media (min-width: 461px) and (max-width: 1024px) {
-    font-size: 21px;
-    margin-top:20px;
-  }
-`
-const DailyTracker = styled(motion.div)`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 135px;
-  margin-top: 60px;
-  @media (max-width: 461px) {
-    margin-top: 20px;
-    flex-direction: column;
-    align-items: start;
-  }
-  @media (min-width: 461px) and (max-width: 1024px) {
-    width: 100%;
-    margin-top: 0px;
-  }
-`
-
-const DailyTrackerObj = styled(motion.div)`
-  display: flex;
-  flex-direction: column;
-  height: 200px;
-  margin-top: 100px;
-  h1 {
-    font-size: 20px;
-    margin-top: 30px;
-    margin-left: 5px;
-  }
-  @media (max-width: 461px) {
-    flex-direction: column;
-    margin-top: 50px;
-    height: 100px;
-    width: 100%;
-    h1 {
-      font-size: 15px;
-      margin-top: 20px;
-      margin-left: 5px;
-    }
-  }
-  @media (min-width: 461px) and (max-width: 1024px) {
-    width: 200px;
-  }
-`
-const DailyTrackerObjTime = styled(motion.span)`
-  color: rgba(241, 196, 15, 0.8);
-  font-size: 55px;
-  display: flex;
-  width: 300px;
-  @media (max-width: 461px) {
-    width: 100px;
-    display: flex;
-    font-size: 40px;
-  }
-  @media (min-width: 461px) and (max-width: 1024px) {
-    width: 200px;
-  }
-`
-const DailyTrackerObjInfo = styled(motion.span)`
-  margin-top: 25px;
-  font-size: 33px;
-  font-weight: 100;
-  @media (max-width: 461px) {
-    font-size: 15px;
-  }
-  @media (min-width: 461px) and (max-width: 1024px) {
-    font-size: 21px;
-  }
-`
-
 const logsIconVariants = {
   start: { width: '6%' },
   focus: { width: '7%', backgroundColor: '#00425A' },
@@ -343,43 +176,34 @@ const iconTextVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
 }
 
-const scrollVariants = {
-  inactive: {
-    opacity: 0,
-  },
-  active: {
-    opacity: 1,
-    transition: { duration: 8 },
-  },
-  leaving: {
-    opacity: 0,
-  },
-}
-
 interface DashboardProps {
   user: User | null
 }
 
 const Logers = ({ user }: DashboardProps) => {
-  const [dashboardRecords, setDashboardRecords] = useState<any>([])
-  const [overview, setOverview] = useState(false)
-  const hoverAnimation = useAnimation()
-  const toggleStates = () => setOverview((prev) => !prev)
-
+  const [dashboardRecords, setDashboardRecords] = useState<IDashboardRecords[]>(
+    []
+  )
   const getDashboardData = async () => {
     if (user) {
-      const data = await dbService
+      const dbResponse = await dbService
         .collection('timer')
         .where('ownerId', '==', user.uid)
         .get()
-      console.log(data.docs.map((doc) => doc.data()))
-      data.docs.map((doc) => console.log(doc.data()))
+      const data = dbResponse.docs.map((doc) => doc.data())
+      setDashboardRecords(data as any)
     }
   }
-
   useEffect(() => {
     getDashboardData()
-  }, [])
+  }, [user])
+
+  const [overview, setOverview] = useState(true)
+  const hoverAnimation = useAnimation()
+  const toggleStates = () => {
+    setIsAnimating(true)
+    setOverview((prev) => !prev)
+  }
 
   const [isAnimating, setIsAnimating] = useState(false)
   useEffect(() => {
@@ -390,18 +214,10 @@ const Logers = ({ user }: DashboardProps) => {
     }
   }, [isAnimating])
 
-  const items = {
-    cardTitle: 'Timemate',
-    cardSubtitle: `Total timer set for ${new Date(
-      Date.now()
-    ).toLocaleDateString()}: 4hours`,
-    date: Date.now(),
-  }
-
   return (
     <AnimatePresence>
       <DashBoardContainer>
-        {overview ? (
+        {!overview ? (
           <LogsContainer>
             <LogsIcon
               onClick={toggleStates}
@@ -457,7 +273,7 @@ const Logers = ({ user }: DashboardProps) => {
           </LogsContainer>
         ) : null}
 
-        {!overview ? (
+        {overview ? (
           <LogsContainer>
             <LogsRight
               layoutId="overview-id"
@@ -508,75 +324,16 @@ const Logers = ({ user }: DashboardProps) => {
         ) : null}
 
         <Link to="/">
-          <HomeAnchor whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+          <HomeAnchor whileHover={{ scale: 1.1 }}>
             <FontAwesomeIcon icon={faClock} color="white" size="3x" />
           </HomeAnchor>
         </Link>
 
-        <DashboardDetails>
-          <DashboardDetailsWrapper>
-            <DashboardDetailsHeader>
-              <DashboardDetailsTitle>Total Time</DashboardDetailsTitle>
-              <DashboardDetailsSubTitle>
-                For only over 10 minutes records
-              </DashboardDetailsSubTitle>
-            </DashboardDetailsHeader>
-            <DayTracker
-              variants={scrollVariants}
-              initial="inactive"
-              whileInView="active"
-              viewport={{ once: true }}
-              exit="leaving">
-              <DayTrackerTime>
-                0.0 <h1>H</h1>
-              </DayTrackerTime>
-              <DayTrackerInfo>For today</DayTrackerInfo>
-            </DayTracker>
-            <DailyTracker
-              variants={scrollVariants}
-              initial="inactive"
-              whileInView="active"
-              viewport={{ once: true }}
-              exit="leaving">
-              <DailyTrackerObj>
-                <DailyTrackerObjTime>
-                  0.0 <h1>H</h1>
-                </DailyTrackerObjTime>
-                <DailyTrackerObjInfo>For a week</DailyTrackerObjInfo>
-              </DailyTrackerObj>
-              <DailyTrackerObj>
-                <DailyTrackerObjTime>
-                  0.0<h1>H</h1>
-                </DailyTrackerObjTime>
-                <DailyTrackerObjInfo>For a month</DailyTrackerObjInfo>
-              </DailyTrackerObj>
-            </DailyTracker>
-          </DashboardDetailsWrapper>
-        </DashboardDetails>
+        {overview && <Overview dashboardRecords={dashboardRecords} />}
 
-        {/* <div
-          style={{
-            width: '700px',
-            height: '500px',
-            padding: 100,
-            overflow: 'scroll',
-          }}>
-          <Chrono
-            items={[1, 2, 3, 4, 5].map(() => items)}
-            mode="VERTICAL"
-            darkMode={true}
-            cardHeight={100}
-            cardWidth={500}
-            hideControls={true}
-            theme={{
-              cardTitleColor: 'yellow',
-              secondary: 'yellow',
-            }}
-            onItemSelected={(data) => console.log(data)}
-            contentDetailsHeight={70}
-            timelinePointShape="diamond"
-          />
-        </div> */}
+        {!overview && dashboardRecords.length !== 0 && (
+          <Logs dashboardRecords={dashboardRecords} />
+        )}
       </DashBoardContainer>
     </AnimatePresence>
   )
