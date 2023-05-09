@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { AnimatePresence, color, motion, useAnimation } from 'framer-motion'
+import { AnimatePresence, motion, useAnimation } from 'framer-motion'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faClock,
@@ -8,33 +8,31 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Chrono } from 'react-chrono'
 import { User } from 'firebase/auth'
 import { dbService } from '../firebase'
+import { IDashboardRecords } from '../utilities'
+import Overview from '../components/dashboard/Overview'
+import Logs from '../components/dashboard/Logs'
 
 const DashBoardContainer = styled(motion.div)`
   display: flex;
-  /* align-items: center; */
-  /* justify-content: space-between; */
   flex-direction: column;
   min-height: 100vh;
   padding: 30px;
   overflow-x: hidden;
-  /* background-color: white; */
 `
 const LogsContainer = styled(motion.div)`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 50vh;
+  height: 47vh;
   width: 100%;
-  /* background-color: red; */
 `
 
 const LogsIcon = styled(motion.div)`
   color: white;
   width: 6%;
-  height: 50vh;
+  height: 45vh;
   background-color: rgba(0, 0, 0, 1);
   border-radius: 20px;
   display: flex;
@@ -54,7 +52,7 @@ const LogsRight = styled(motion.div)`
   display: flex;
   align-items: center;
   width: 87.5%;
-  height: 50vh;
+  height: 45vh;
   border-radius: 20px;
   background-color: rgba(241, 196, 15, 0.8);
   padding: 0px 50px;
@@ -90,74 +88,6 @@ const HomeAnchor = styled(motion.div)`
   right: 20px;
 `
 
-const DashboardDetails = styled(motion.div)`
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  height: 50vh;
-`
-const DashboardDetailsWrapper = styled(motion.div)`
-  display: flex;
-  flex-direction: column;
-  /* background-color: #012d1c; */
-  width: 56%;
-`
-
-const DashboardDetailsHeader = styled(motion.div)`
-  margin-top: 100px;
-  height: 100px;
-`
-
-const DashboardDetailsTitle = styled(motion.h1)`
-  font-size: 40px;
-`
-const DashboardDetailsSubTitle = styled(motion.h1)`
-  font-size: 25px;
-  font-weight: 100;
-  margin-top: 20px;
-`
-
-const DayTracker = styled(motion.div)`
-  display: flex;
-  flex-direction: column;
-  height: 200px;
-  margin-top: 100px;
-`
-const DayTrackerTime = styled(motion.span)`
-  color: rgba(241, 196, 15, 0.8);
-  font-size: 95px;
-`
-const DayTrackerInfo = styled(motion.span)`
-  margin-top: 25px;
-  font-size: 33px;
-  font-weight: 100;
-`
-const DailyTracker = styled(motion.div)`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 135px;
-  margin-top: 60px;
-`
-const DailyTrackerObj = styled(motion.div)`
-  display: flex;
-  flex-direction: column;
-  height: 200px;
-  margin-top: 100px;
-`
-const DailyTrackerObjTime = styled(motion.span)`
-  color: rgba(241, 196, 15, 0.8);
-  font-size: 55px;
-`
-const DailyTrackerObjInfo = styled(motion.span)`
-  margin-top: 25px;
-  font-size: 33px;
-  font-weight: 100;
-`
-const DashboardDataTitle = styled(motion.h1)`
-  font-size: 10px;
-`
-
 const logsIconVariants = {
   start: { width: '6%' },
   focus: { width: '7%', backgroundColor: '#00425A' },
@@ -187,56 +117,34 @@ const iconTextVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
 }
 
-const scrollVariants = {
-  inactive: {
-    opacity: 0,
-  },
-  active: {
-    opacity: 1,
-    transition: { duration: 8 },
-  },
-  leaving: {
-    opacity: 0,
-  },
-}
-
 interface DashboardProps {
   user: User | null
 }
 
 const Logers = ({ user }: DashboardProps) => {
-  const [dashboardRecords, setDashboardRecords] = useState<any>([])
-  const [overview, setOverview] = useState(false)
-  const hoverAnimation = useAnimation()
-  const toggleStates = () => setOverview((prev) => !prev)
-
-  // async function getDashboardData() {
-  //   await dbService.collection('timer').onSnapshot((snapshots) => {
-  //     const dashboard = snapshots.docs.map((doc) => ({
-  //       id: doc.id,
-  //       ...doc.data(),
-  //     }))
-  //     setDashboardRecords(dashboard)
-  //     console.log(dashboard, "my dashboards");
-
-  //   })
-  // }
-
+  const [dashboardRecords, setDashboardRecords] = useState<IDashboardRecords[]>(
+    []
+  )
   const getDashboardData = async () => {
     if (user) {
-      console.log('ngvjgvhgmvmfjtyghv')
-      const data = await dbService
+      const dbResponse = await dbService
         .collection('timer')
         .where('ownerId', '==', user.uid)
         .get()
-      console.log(data.docs.map((doc) => doc.data()))
-      data.docs.map((doc) => console.log(doc.data()))
+      const data = dbResponse.docs.map((doc) => doc.data())
+      setDashboardRecords(data as any)
     }
   }
-
   useEffect(() => {
     getDashboardData()
-  }, [])
+  }, [user])
+
+  const [overview, setOverview] = useState(true)
+  const hoverAnimation = useAnimation()
+  const toggleStates = () => {
+    setIsAnimating(true)
+    setOverview((prev) => !prev)
+  }
 
   const [isAnimating, setIsAnimating] = useState(false)
   useEffect(() => {
@@ -247,18 +155,10 @@ const Logers = ({ user }: DashboardProps) => {
     }
   }, [isAnimating])
 
-  const items = {
-    cardTitle: 'Timemate',
-    cardSubtitle: `Total timer set for ${new Date(
-      Date.now()
-    ).toLocaleDateString()}: 4hours`,
-    date: Date.now(),
-  }
-
   return (
     <AnimatePresence>
       <DashBoardContainer>
-        {overview ? (
+        {!overview ? (
           <LogsContainer>
             <LogsIcon
               onClick={toggleStates}
@@ -314,7 +214,7 @@ const Logers = ({ user }: DashboardProps) => {
           </LogsContainer>
         ) : null}
 
-        {!overview ? (
+        {overview ? (
           <LogsContainer>
             <LogsRight
               layoutId="overview-id"
@@ -365,76 +265,18 @@ const Logers = ({ user }: DashboardProps) => {
         ) : null}
 
         <Link to="/">
-          <HomeAnchor whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+          <HomeAnchor whileHover={{ scale: 1.1 }}>
             <FontAwesomeIcon icon={faClock} color="white" size="3x" />
           </HomeAnchor>
         </Link>
-        <DashboardDetails>
-          <DashboardDetailsWrapper>
-            <DashboardDetailsHeader>
-              <DashboardDetailsTitle>Total Time</DashboardDetailsTitle>
-              <DashboardDetailsSubTitle>
-                For only over 10 minutes records
-              </DashboardDetailsSubTitle>
-            </DashboardDetailsHeader>
-            <DayTracker
-              variants={scrollVariants}
-              initial="inactive"
-              whileInView="active"
-              viewport={{ once: true }}
-              exit="leaving">
-              <DayTrackerTime>0.0 H</DayTrackerTime>
-              <DayTrackerInfo>For today</DayTrackerInfo>
-            </DayTracker>
-            <DailyTracker
-              variants={scrollVariants}
-              initial="inactive"
-              whileInView="active"
-              viewport={{ once: true }}
-              exit="leaving">
-              <DailyTrackerObj>
-                <DailyTrackerObjTime>0.0 H</DailyTrackerObjTime>
-                <DailyTrackerObjInfo>For a week</DailyTrackerObjInfo>
-              </DailyTrackerObj>
-              <DailyTrackerObj>
-                <DailyTrackerObjTime>0.0 H</DailyTrackerObjTime>
-                <DailyTrackerObjInfo>For a Month</DailyTrackerObjInfo>
-              </DailyTrackerObj>
-              <DailyTrackerObj>
-                <DailyTrackerObjTime>0.0 H</DailyTrackerObjTime>
-                <DailyTrackerObjInfo>For whole days</DailyTrackerObjInfo>
-              </DailyTrackerObj>
-            </DailyTracker>
-          </DashboardDetailsWrapper>
-        </DashboardDetails>
 
-        <div
-          style={{
-            width: '700px',
-            height: '500px',
-            padding: 100,
-            overflow: 'scroll',
-          }}>
-          <Chrono
-            items={[1, 2, 3, 4, 5].map(() => items)}
-            mode="VERTICAL"
-            darkMode={true}
-            cardHeight={100}
-            cardWidth={500}
-            hideControls={true}
-            theme={{
-              cardTitleColor: 'yellow',
-              secondary: 'yellow',
-            }}
-            onItemSelected={(data) => console.log(data)}
-            contentDetailsHeight={70}
-            timelinePointShape="diamond"
-          />
-        </div>
+        {overview && <Overview dashboardRecords={dashboardRecords} />}
+
+        {!overview && dashboardRecords.length !== 0 && (
+          <Logs dashboardRecords={dashboardRecords} />
+        )}
       </DashBoardContainer>
     </AnimatePresence>
   )
 }
 export default Logers
-
-//                                                      i left te spark

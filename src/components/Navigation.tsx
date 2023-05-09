@@ -9,9 +9,9 @@ import {
   faSignOut,
 } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react'
-import TimeSettings from './nav-components/TimeSettings'
+import TimeSettings from './navigation/TimeSettings'
 import { accentColor } from './globals'
-import DisplaySettings from './nav-components/DisplaySettings'
+import DisplaySettings from './navigation/DisplaySettings'
 import { auth } from '../firebase'
 import { Link } from 'react-router-dom'
 

@@ -5,8 +5,8 @@ import { useTimer } from 'react-timer-hook'
 import 'react-circular-progressbar/dist/styles.css'
 import Navigation from '../components/Navigation'
 import BottomRightOptions from '../components/BottomRightOptions'
-import AnalogueTimer from '../components/ClockTimer/AnalogueTimer'
-import Clock from '../components/DigitalClock'
+import AnalogueTimer from '../components/clock-and-timer/AnalogueTimer'
+import Clock from '../components/clock-and-timer/DigitalClock'
 
 import useSound from 'use-sound'
 //@ts-ignore
@@ -38,6 +38,9 @@ const CenterContainer = styled.div`
 `
 const CenterContainerClock = styled.div`
   margin-left: 15%;
+  @media (max-width: 461px) {
+    margin-top: 30%;
+  }
 `
 const RightContainer = styled.div`
   height: 100%;
@@ -80,8 +83,8 @@ function Home({ user }: HomeProps) {
   useEffect(() => {
     const unloadCallback = (event: any) => {
       event.preventDefault()
-      event.returnValue = 'Eeyy!'
-      return 'Eeyy'
+      event.returnValue = ''
+      return ''
     }
 
     window.addEventListener('beforeunload', unloadCallback)
