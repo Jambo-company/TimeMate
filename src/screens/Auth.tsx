@@ -174,6 +174,15 @@ const FormSocialLoginSpan = styled.span`
   color: white;
 `
 
+const ErrorMessage = styled.span`
+  font-size: 20px;
+  margin-top: 20px;
+`
+
+const ToogleAccounts = styled.span`
+  font-size: 20px;
+`
+
 interface ILogInProp {
   isLoggedIn: boolean
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>
@@ -228,7 +237,7 @@ const Auth = ({ isLoggedIn, setIsLoggedIn, setUser }: ILogInProp) => {
       }
       setIsLoggedIn(true)
     } catch (error: any) {
-      setError(error.message)
+      setError(error.code.substr(5, error.code.length - 1))
     }
   }
   const toggleAccount = () => setNewAccount((prev) => !prev)
@@ -270,19 +279,25 @@ const Auth = ({ isLoggedIn, setIsLoggedIn, setUser }: ILogInProp) => {
           onChange={onFormChange}
           required
         />
+        <ToogleAccounts onClick={toggleAccount}>
+          {newAccount ? 'Sign in' : 'Create a new account'}
+        </ToogleAccounts>
         <FormLoginBtn
           type="submit"
-          value={newAccount ? 'Create A New Account' : 'Login'}
+          value={newAccount ? 'Create A New Account' : 'Sign In'}
         />
+
         <AnimatePresence>
           <FormSocialLoginBtn
             onClick={SocialLogin}
             name="google"
-            whileTap={{ scale: 0.8 }} whileHover={{scale:1.1}}>
+            whileTap={{ scale: 0.8 }}
+            whileHover={{ scale: 1.1 }}>
             <FontAwesomeIcon icon={faGoogle} color="white" size="2x" />
             <FormSocialLoginSpan>Google</FormSocialLoginSpan>
           </FormSocialLoginBtn>
         </AnimatePresence>
+        <ErrorMessage>{error}</ErrorMessage>
       </Form>
     </>
   )

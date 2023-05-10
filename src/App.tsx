@@ -14,15 +14,15 @@ import 'react-circular-progressbar/dist/styles.css'
 import Home from './screens/Home'
 import Dashboard from './screens/Dashboard'
 import { User } from 'firebase/auth'
+import { QueryClient, QueryClientProvider, useQuery } from 'react-query'
 
 function App() {
   const [init, setInit] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-
   const [user, setUser] = useState<User | null>(null)
   console.log('User', user)
 
-  useEffect(() => {
+  const userData = () => {
     auth.onAuthStateChanged((authUser) => {
       if (authUser) {
         setUser(authUser)
@@ -32,23 +32,36 @@ function App() {
       }
       setInit(true)
     })
-  }, [])
+  }
+
+  // useEffect(() => {
+  //   auth.onAuthStateChanged((authUser) => {
+  //     console.log(authUser, 'this is the user')
+  //     if (authUser) {
+  //       setUser(authUser)
+  //       setIsLoggedIn(true)
+  //     } else {
+  //       setIsLoggedIn(false)
+  //     }
+  //     setInit(true)
+  //   })
+  // }, [])
+
+  useQuery('userDetails', userData)
 
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Home user={user} />} />
+
         <Route
-          path="/"
+          path="/auth"
           element={
-            isLoggedIn ? (
-              <Home user={user} />
-            ) : (
-              <Auth
-                isLoggedIn={isLoggedIn}
-                setIsLoggedIn={setIsLoggedIn}
-                setUser={setUser}
-              />
-            )
+            <Auth
+              isLoggedIn={isLoggedIn}
+              setIsLoggedIn={setIsLoggedIn}
+              setUser={setUser}
+            />
           }
         />
         <Route path="/dashboard" element={<Dashboard user={user} />} />

@@ -5,6 +5,21 @@ import { accentColor } from '../globals'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useRecoilState } from 'recoil'
 import { maxTime } from '../../atom'
+import ToogleSwitch from '../ToogleSwitch'
+import Clock from '../clock-and-timer/DigitalClock'
+
+const DisplayTime = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 20px;
+  width: 100%;
+`
+
+const ToggleDigitalTime = styled.span`
+  color: white;
+  font-size: 16px;
+`
 
 const TimeSettingsWrapper = styled.div``
 
@@ -36,8 +51,12 @@ const Selected = styled.span`
   font-size: 11px;
   font-weight: 200;
 `
+interface TimeProps {
+  switchTime: () => void
+  showDigitalTime: boolean
+}
 
-function TimeSettings() {
+function TimeSettings({ switchTime, showDigitalTime }: TimeProps) {
   const [maximumTime, setMaximumTime] = useRecoilState(maxTime)
 
   const [showMaxTimeSettings, setShowMaxTimeSettings] = useState(false)
@@ -55,7 +74,6 @@ function TimeSettings() {
 
   const [showIntervalSetttings, setShowIntervalSettings] = useState(false)
   const toogleIntervalSettings = () => setShowIntervalSettings((prev) => !prev)
-
   return (
     <TimeSettingsWrapper>
       <SettingHeading
@@ -84,26 +102,15 @@ function TimeSettings() {
         )}
       </AnimatePresence>
 
-      {/* <SettingHeading
-        title="Set interval per rotation"
-        settingOpen={showIntervalSetttings}
-        toogleSetings={toogleIntervalSettings}
-      />
-      <AnimatePresence>
-        {showIntervalSetttings && (
-          <IntervalSettings
-            initial={{ scaleY: 0 }}
-            animate={{ scaleY: 1, transition: { duration: 0.3 } }}
-            exit={{ scaleY: 0, transition: { duration: 0.15 } }}>
-            {[1, 5, 10, 15, 30].map((item, index) => (
-              <SettingOption key={index}>
-                {item} <Selected>Selected</Selected>
-              </SettingOption>
-            ))}
-          </IntervalSettings>
-        )}
-      </AnimatePresence> */}
-
+      <DisplayTime>
+        <ToggleDigitalTime>
+          {showDigitalTime ? 'Hide Time' : 'Show Time'}
+        </ToggleDigitalTime>
+        <ToogleSwitch
+          switchState={showDigitalTime}
+          toogleFunction={switchTime}
+        />
+      </DisplayTime>
     </TimeSettingsWrapper>
   )
 }

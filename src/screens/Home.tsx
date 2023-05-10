@@ -67,7 +67,7 @@ const EstimatedTimeContainer = styled.div`
   position: absolute;
   bottom: 10px;
   left: 33%;
-  
+
   @media (max-width: 461px) {
     display: flex;
     flex-direction: column;
@@ -212,11 +212,20 @@ function Home({ user }: HomeProps) {
       setShowingNavigation(true)
     }
   }, [alarmPlaying])
+  const [showClock, setShowClock] = useState(false)
+
+  const ToggleShowing = () => {
+    setShowClock((open) => !open)
+  }
 
   return (
     <Wrapper>
-      <Navigation showing={showingNavigation} />
-      {!isRunning && <Clock />}
+      <Navigation
+        showing={showingNavigation}
+        toggleShowing={ToggleShowing}
+        showTime={showClock}
+      />
+      {!isRunning && <Clock displayClock={showClock} />}
       <CenterContainer>
         <CenterContainerClock>
           <AnalogueTimer
@@ -261,4 +270,3 @@ function Home({ user }: HomeProps) {
   )
 }
 export default Home
-//
