@@ -14,6 +14,7 @@ import 'react-circular-progressbar/dist/styles.css'
 import Home from './screens/Home'
 import Dashboard from './screens/Dashboard'
 import { User } from 'firebase/auth'
+import { QueryClient, QueryClientProvider } from 'react-query'
 
 function App() {
   const [init, setInit] = useState(false)
@@ -34,26 +35,30 @@ function App() {
     })
   }, [])
 
+  const queryClient = new QueryClient()
+
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            isLoggedIn ? (
-              <Home user={user} />
-            ) : (
-              <Auth
-                isLoggedIn={isLoggedIn}
-                setIsLoggedIn={setIsLoggedIn}
-                setUser={setUser}
-              />
-            )
-          }
-        />
-        <Route path="/dashboard" element={<Dashboard user={user} />} />
-      </Routes>
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              isLoggedIn ? (
+                <Home user={user} />
+              ) : (
+                <Auth
+                  isLoggedIn={isLoggedIn}
+                  setIsLoggedIn={setIsLoggedIn}
+                  setUser={setUser}
+                />
+              )
+            }
+          />
+          <Route path="/dashboard" element={<Dashboard user={user} />} />
+        </Routes>
+      </BrowserRouter>
+    </QueryClientProvider>
   )
 }
 

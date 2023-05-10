@@ -56,6 +56,7 @@ const TimerArrow = styled.div`
 interface AnalogueTimerProps {
   secondsCounted: number
   setSecondsCounted: React.Dispatch<React.SetStateAction<number>>
+  setShowingNavigation: React.Dispatch<React.SetStateAction<boolean>>
   hours: number
   minutes: number
   seconds: number
@@ -66,6 +67,7 @@ interface AnalogueTimerProps {
 function AnalogueTimer({
   setSecondsCounted,
   secondsCounted,
+  setShowingNavigation,
   hours,
   minutes,
   seconds,

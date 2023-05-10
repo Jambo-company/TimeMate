@@ -15,6 +15,7 @@ import { useRecoilValue } from 'recoil'
 import { selectedTime } from '../atom'
 import { motion } from 'framer-motion'
 import { dbService } from '../firebase'
+import { useQuery } from 'react-query'
 
 const Wrapper = styled.div`
   display: flex;
@@ -67,7 +68,7 @@ const EstimatedTimeContainer = styled.div`
   position: absolute;
   bottom: 10px;
   left: 33%;
-  
+
   @media (max-width: 461px) {
     display: flex;
     flex-direction: column;
@@ -127,8 +128,6 @@ function Home({ user }: HomeProps) {
 
   const [isAlarmEnabled, setIsAlarmEnabled] = useState(true)
   const toggleAlarm = () => setIsAlarmEnabled((prev) => !prev)
-  const [isNotificationEnabled, setIsNotificationEnabled] = useState(true)
-  const toggleNotification = () => setIsNotificationEnabled((prev) => !prev)
 
   const [alarmPlaying, setAlarmPlaying] = useState(false)
   const [playSound, { stop }] = useSound(alarm)
@@ -146,8 +145,17 @@ function Home({ user }: HomeProps) {
   }
 
   const [secondsCounted, setSecondsCounted] = useState(0)
-  const [latest, setLatest] = useState<{ id: string } | null>(null)
-  async function updateTimerRecord() {
+  type ILatestRecord = {
+    id: string
+    ownerId: string
+    time: number
+    startTime: number
+    noOfTimesPaused: number
+    secondsCounted: number
+    endTime: null | number
+  }
+  const [latestRecord, setLatestRecord] = useState<ILatestRecord | null>(null)
+  async function getLatestRecord() {
     await dbService
       .collection('timer')
       .orderBy('startTime', 'desc')
@@ -156,14 +164,19 @@ function Home({ user }: HomeProps) {
           id: doc.id,
           ...doc.data(),
         }))
-        setLatest(dashboard[0])
+        setLatestRecord(dashboard[0] as any)
       })
-    if (latest) {
-      await dbService.doc(`timer/${latest.id}`).update({
+  }
+
+  async function updateTimerSeconds() {
+    if (latestRecord) {
+      await dbService.doc(`timer/${latestRecord.id}`).update({
         secondsCounted,
       })
     }
   }
+
+  useQuery('LatestRecord', getLatestRecord)
 
   const expiryTimestamp = new Date()
   const { seconds, minutes, hours, isRunning, pause, resume, restart } =
@@ -171,7 +184,13 @@ function Home({ user }: HomeProps) {
       expiryTimestamp,
       autoStart: false,
       onExpire: async () => {
-        await updateTimerRecord()
+        //await updateTimerSeconds()
+        if (latestRecord) {
+          await dbService.doc(`timer/${latestRecord.id}`).update({
+            secondsCounted,
+            endTime: Date.now(),
+          })
+        }
         console.warn('onExpire called')
         if (isAlarmEnabled) {
           AlarmHandler()
@@ -181,6 +200,12 @@ function Home({ user }: HomeProps) {
     })
 
   useEffect(() => {
+    if (!isRunning) {
+      setShowingNavigation(false)
+      setTimeout(() => {
+        setShowingNavigation(true)
+      }, 750)
+    }
     if (isRunning) {
       setSecondsCounted((prev) => prev + 1)
       console.log('secondsCounted', secondsCounted)
@@ -222,6 +247,7 @@ function Home({ user }: HomeProps) {
           <AnalogueTimer
             secondsCounted={secondsCounted}
             setSecondsCounted={setSecondsCounted}
+            setShowingNavigation={setShowingNavigation}
             hours={hours}
             minutes={minutes}
             seconds={seconds}
@@ -241,14 +267,13 @@ function Home({ user }: HomeProps) {
         <BottomRightOptions
           user={user}
           secondsCounted={secondsCounted}
-          updateTimerRecord={updateTimerRecord}
+          latestRecord={latestRecord}
+          updateTimerSeconds={updateTimerSeconds}
           isRunning={isRunning}
           alarmPlaying={alarmPlaying}
           AlarmHandler={AlarmHandler}
           alarmEnabled={isAlarmEnabled}
           toggleAlarm={toggleAlarm}
-          notificationEnabled={isNotificationEnabled}
-          toggleNotification={toggleNotification}
           pause={pause}
           resume={resume}
           hours={hours}

@@ -31,10 +31,6 @@ const DashboardDetailsWrapper = styled(motion.div)`
 
 const DashboardDetailsHeader = styled(motion.div)`
   margin-top: 100px;
-  height: 100px;
-  @media (max-width: 461px) {
-    height: 70px;
-  }
 `
 
 const DashboardDetailsTitle = styled(motion.h1)`
@@ -56,14 +52,14 @@ const DayTracker = styled(motion.div)`
   display: flex;
   flex-direction: column;
   height: 200px;
-  margin-top: 100px;
+  margin-top: 65px;
   @media (max-width: 461px) {
     margin-top: 20px;
     height: 90px;
   }
 `
-const DayTrackerTime = styled(motion.span)<{currentcolor: string}>`
-  color: ${({currentcolor})=> currentcolor};
+const DayTrackerTime = styled(motion.span)<{ currentcolor: string }>`
+  color: ${({ currentcolor }) => currentcolor};
   font-size: 95px;
   display: flex;
   h1 {
@@ -81,7 +77,7 @@ const DayTrackerTime = styled(motion.span)<{currentcolor: string}>`
   }
 `
 const DayTrackerInfo = styled(motion.span)`
-  margin-top: 25px;
+  margin-top: 20px;
   font-size: 33px;
   font-weight: 200;
   @media (max-width: 461px) {
@@ -93,14 +89,13 @@ const DailyTracker = styled(motion.div)`
   display: flex;
   align-items: center;
   height: 135px;
-  margin-top: 60px;
+  margin-top: 25px;
 
   @media (max-width: 461px) {
     margin-top: 20px;
     flex-direction: column;
     align-items: start;
     min-height: 50vh;
-    /* background-color: peachpuff; */
   }
 `
 
@@ -126,8 +121,8 @@ const DailyTrackerObj = styled(motion.div)`
     }
   }
 `
-const DailyTrackerObjTime = styled(motion.span)<{currentcolor: string}>`
-  color: ${({currentcolor})=> currentcolor};
+const DailyTrackerObjTime = styled(motion.span)<{ currentcolor: string }>`
+  color: ${({ currentcolor }) => currentcolor};
   font-size: 45px;
   display: flex;
   width: 400px;
@@ -138,7 +133,7 @@ const DailyTrackerObjTime = styled(motion.span)<{currentcolor: string}>`
   }
 `
 const DailyTrackerObjInfo = styled(motion.span)`
-  margin-top: 25px;
+  margin-top: 17px;
   font-size: 30px;
   font-weight: 100;
   @media (max-width: 461px) {
@@ -146,10 +141,21 @@ const DailyTrackerObjInfo = styled(motion.span)`
   }
 `
 
+const TimeTableHeading = styled.h3`
+  font-size: 35px;
+  margin-top: 75px;
+`
 const HeatMapContainer = styled.div`
   width: 85%;
+  margin: 75px 0px;
+`
+
+const BehavioursContainer = styled.div`
   margin-top: 45px;
-  margin-bottom: 20px;
+`
+const BehaviourHeading = styled(DailyTrackerObjInfo)`
+  font-size: 33px;
+  font-weight: 550;
 `
 
 const scrollVariants = {
@@ -204,13 +210,28 @@ function Overview({ dashboardRecords }: OverviewProps) {
   var fill = rootStyles.getPropertyValue('--fill')
   //@ts-ignore
   root.style.setProperty('--fill', currentColor)
+
+  const notPausedRecords = dashboardRecords.filter(
+    (record) => record.noOfTimesPaused === 0
+  )
+
+  var longestDuration = 0
+  if (dashboardRecords.length !== 0) {
+    longestDuration = dashboardRecords[0].secondsCounted
+    for (var i = 0; i < dashboardRecords.length; i++) {
+      if (longestDuration < dashboardRecords[i].secondsCounted) {
+        longestDuration = dashboardRecords[i].secondsCounted
+      }
+    }
+  }
+
   return (
     <DashboardDetails>
       <DashboardDetailsWrapper>
         <DashboardDetailsHeader>
           <DashboardDetailsTitle>Total Time</DashboardDetailsTitle>
           <DashboardDetailsSubTitle>
-            For only over 10 minutes records
+            Your brief records overview
           </DashboardDetailsSubTitle>
         </DashboardDetailsHeader>
         <DayTracker
@@ -243,6 +264,12 @@ function Overview({ dashboardRecords }: OverviewProps) {
             <DailyTrackerObjInfo>For a Month</DailyTrackerObjInfo>
           </DailyTrackerObj>
         </DailyTracker>
+        <TimeTableHeading>Time Table</TimeTableHeading>
+        <TimeTableHeading
+          as="h4"
+          style={{ fontWeight: 300, fontSize: 20, marginTop: 25 }}>
+          Visualize your recorder times per day
+        </TimeTableHeading>
         <HeatMapContainer>
           <CalendarHeatmap
             startDate={getPeriodDates(265)}
@@ -251,6 +278,39 @@ function Overview({ dashboardRecords }: OverviewProps) {
             values={heatmapValues}
           />
         </HeatMapContainer>
+        <BehavioursContainer>
+          <BehaviourHeading as="h3">Behaviours</BehaviourHeading>
+          <BehaviourHeading as="h4" style={{ fontWeight: 200, fontSize: 20 }}>
+            We also collect your timing behaviours
+          </BehaviourHeading>
+          <DailyTracker
+            style={{ marginTop: 75 }}
+            variants={scrollVariants}
+            initial="inactive"
+            whileInView="active"
+            viewport={{ once: true }}
+            exit="leaving">
+            <DailyTrackerObj>
+              <DailyTrackerObjTime currentcolor={currentColor}>
+                {Math.round(
+                  (notPausedRecords.length / dashboardRecords.length) * 100
+                )}
+                %
+              </DailyTrackerObjTime>
+              <DailyTrackerObjInfo style={{ fontSize: 20, marginTop: 10 }}>
+                Finish timing without pause (Overall)
+              </DailyTrackerObjInfo>
+            </DailyTrackerObj>
+            <DailyTrackerObj>
+              <DailyTrackerObjTime currentcolor={currentColor}>
+                {displayTimeFormat(longestDuration)}
+              </DailyTrackerObjTime>
+              <DailyTrackerObjInfo style={{ fontSize: 20, marginTop: 10 }}>
+                Longest Timing duration (Overall)
+              </DailyTrackerObjInfo>
+            </DailyTrackerObj>
+          </DailyTracker>
+        </BehavioursContainer>
       </DashboardDetailsWrapper>
     </DashboardDetails>
   )
