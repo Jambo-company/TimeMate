@@ -59,6 +59,7 @@ const DetailsContainer = styled.section`
   align-items: center;
   @media (max-width: 1024px) {
     width: 100%;
+    margin-bottom: 25px;
   }
 `
 const DataTitle = styled.h3`
@@ -88,12 +89,18 @@ const FieldTitle = styled.h4`
   font-size: 16px;
   font-weight: 600;
   text-align: center;
+  @media (max-width: 461px) {
+    font-size: 13px;
+  }
 `
 const FieldData = styled.span<{ currentcolor: string }>`
   font-weight: 300;
   text-align: center;
   font-size: 13px;
   color: ${({ currentcolor }) => currentcolor};
+  @media (max-width: 461px) {
+    font-size: 11px;
+  }
 `
 
 interface LogsProps {
