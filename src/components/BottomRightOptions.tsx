@@ -156,7 +156,6 @@ function BottomRightOptions({
     await dbService.collection('timer').add(newTimerData)
   }
 
-  console.log('latestRecord', latestRecord)
 
   const [isDragging, setIsDragging] = useState(false)
   useEffect(() => {
@@ -180,17 +179,6 @@ function BottomRightOptions({
           }
           if (isRunning) {
             pause()
-            /*             await dbService
-            .collection('timer')
-            .orderBy('startTime', 'desc')
-            .onSnapshot((snapshots) => {
-              const dashboard = snapshots.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-              }))
-              setLatest(dashboard[0])
-            })
-          */
             if (latestRecord) {
               await dbService.doc(`timer/${latestRecord.id}`).update({
                 secondsCounted,
@@ -216,7 +204,6 @@ function BottomRightOptions({
             btnAnimation.start('show')
           }, 700)
           console.log('Update Previous')
-          console.log('secondsCounted', secondsCounted)
         }}>
         {isRunning ? 'Pause' : 'Start Focus'}
       </StartOrPauseBtn>

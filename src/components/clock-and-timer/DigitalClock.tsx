@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
-import ToogleSwitch from '../ToogleSwitch'
 
 const MainContainer = styled(motion.div)`
   display: flex;
@@ -29,7 +28,6 @@ const ClockContainer = styled(motion.div)`
   padding: 12px;
   border: 2px solid grey;
   background-color: transparent;
-  /* background-color: red; */
 `
 
 const ClockHolder = styled(motion.div)`
@@ -45,21 +43,6 @@ const ClockHolder = styled(motion.div)`
   background-color: transparent;
 `
 
-const ToggleClock = styled(motion.button)`
-  width: 100px;
-  height: 42px;
-  border: none;
-  background-color: transparent;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  outline: none;
-  color: white;
-  border-radius: 20px;
-  cursor: pointer;
-  border: 0.5px solid white;
-`
-
 const clockContainerVariants = {
   inactive: {
     opacity: 0,
@@ -72,27 +55,18 @@ const clockContainerVariants = {
   },
 }
 
-const DisplayTime = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 20px;
-  width: 100%;
-`
+interface ToggleTimeProps {
+  displayClock: boolean
+}
 
-const ToggleDigitalTime = styled.span`
-  color: white;
-  font-size: 20px;
-`
-
-const Clock = () => {
+const Clock = ({ displayClock }: ToggleTimeProps) => {
   let time = new Date().toLocaleString([], {
     hour12: true,
     hour: '2-digit',
     minute: '2-digit',
   })
   const [timer, setTimer] = useState(time)
-  const [showClock, setShowClock] = useState(false)
+
   const UpdateTime = () => {
     time = new Date().toLocaleTimeString([], {
       hour12: true,
@@ -103,24 +77,10 @@ const Clock = () => {
   }
   setInterval(UpdateTime)
 
-  const ToggleShowing = () => {
-    setShowClock((open) => !open)
-  }
   return (
     <>
       <MainContainer>
-        <DisplayTime>
-          <ToggleDigitalTime>
-            {showClock ? 'Hide Time' : 'Show Time'}
-          </ToggleDigitalTime>
-
-          <ToogleSwitch
-            switchState={showClock}
-            toogleFunction={ToggleShowing}
-          />
-        </DisplayTime>
-
-        {showClock ? (
+        {displayClock ? (
           <ClockContainer
             variants={clockContainerVariants}
             initial="inactive"
@@ -136,4 +96,3 @@ const Clock = () => {
   )
 }
 export default Clock
-

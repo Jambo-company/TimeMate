@@ -4,7 +4,7 @@ import {
   Route,
 } from 'react-router-dom'
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import 'react-circular-progressbar/dist/styles.css'
 
 import Auth from './screens/Auth'
@@ -14,16 +14,14 @@ import 'react-circular-progressbar/dist/styles.css'
 import Home from './screens/Home'
 import Dashboard from './screens/Dashboard'
 import { User } from 'firebase/auth'
-import { QueryClient, QueryClientProvider } from 'react-query'
+import { useQuery } from 'react-query'
 
 function App() {
-  const [init, setInit] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-
   const [user, setUser] = useState<User | null>(null)
   console.log('User', user)
 
-  useEffect(() => {
+  const userData = () => {
     auth.onAuthStateChanged((authUser) => {
       if (authUser) {
         setUser(authUser)
@@ -31,34 +29,31 @@ function App() {
       } else {
         setIsLoggedIn(false)
       }
-      setInit(true)
     })
-  }, [])
+  }
 
-  const queryClient = new QueryClient()
+  useQuery('userDetails', userData)
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              isLoggedIn ? (
-                <Home user={user} />
-              ) : (
-                <Auth
-                  isLoggedIn={isLoggedIn}
-                  setIsLoggedIn={setIsLoggedIn}
-                  setUser={setUser}
-                />
-              )
-            }
-          />
-          <Route path="/dashboard" element={<Dashboard user={user} />} />
-        </Routes>
-      </BrowserRouter>
-    </QueryClientProvider>
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            isLoggedIn ? (
+              <Home user={user} />
+            ) : (
+              <Auth
+                isLoggedIn={isLoggedIn}
+                setIsLoggedIn={setIsLoggedIn}
+                setUser={setUser}
+              />
+            )
+          }
+        />
+        <Route path="/dashboard" element={<Dashboard user={user} />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 

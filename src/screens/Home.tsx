@@ -113,7 +113,7 @@ interface HomeProps {
   user: User | null
 }
 function Home({ user }: HomeProps) {
-  useEffect(() => {
+  function preventLeave() {
     const unloadCallback = (event: any) => {
       event.preventDefault()
       event.returnValue = ''
@@ -122,7 +122,7 @@ function Home({ user }: HomeProps) {
 
     window.addEventListener('beforeunload', unloadCallback)
     return () => window.removeEventListener('beforeunload', unloadCallback)
-  }, [])
+  }
 
   const [showingNavigation, setShowingNavigation] = useState(true)
 
@@ -184,7 +184,6 @@ function Home({ user }: HomeProps) {
       expiryTimestamp,
       autoStart: false,
       onExpire: async () => {
-        //await updateTimerSeconds()
         if (latestRecord) {
           await dbService.doc(`timer/${latestRecord.id}`).update({
             secondsCounted,
@@ -208,7 +207,7 @@ function Home({ user }: HomeProps) {
     }
     if (isRunning) {
       setSecondsCounted((prev) => prev + 1)
-      console.log('secondsCounted', secondsCounted)
+      preventLeave()
     }
   }, [seconds, minutes])
 
@@ -237,11 +236,20 @@ function Home({ user }: HomeProps) {
       setShowingNavigation(true)
     }
   }, [alarmPlaying])
+  const [showClock, setShowClock] = useState(false)
+
+  const ToggleShowing = () => {
+    setShowClock((open) => !open)
+  }
 
   return (
     <Wrapper>
-      <Navigation showing={showingNavigation} />
-      {!isRunning && <Clock />}
+      <Navigation
+        showing={showingNavigation}
+        toggleShowing={ToggleShowing}
+        showTime={showClock}
+      />
+      {!isRunning && <Clock displayClock={showClock} />}
       <CenterContainer>
         <CenterContainerClock>
           <AnalogueTimer
@@ -286,4 +294,3 @@ function Home({ user }: HomeProps) {
   )
 }
 export default Home
-//

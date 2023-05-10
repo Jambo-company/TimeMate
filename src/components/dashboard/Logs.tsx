@@ -124,7 +124,6 @@ function Logs({ dashboardRecords }: LogsProps) {
     (record) =>
       new Date(record.startTime).toLocaleDateString() === itemSelected?.date
   )
-  console.log(selectedRecords)
   const currentColor = useRecoilValue(displayFillColor)
   return (
     <Wrapper>
@@ -193,7 +192,7 @@ function Logs({ dashboardRecords }: LogsProps) {
         )}
       </ChronoContainer>
       <DetailsContainer>
-        {selectedRecords.map((record) => (
+        {selectedRecords.map((record, index) => (
           <>
             <DataTitle>
               Time: {new Date(record.startTime).toLocaleTimeString()}

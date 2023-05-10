@@ -72,8 +72,10 @@ const Navtext = styled.span`
 
 interface NavigationProps {
   showing: boolean
+  toggleShowing: () => void
+  showTime: boolean
 }
-function Navigation({ showing }: NavigationProps) {
+function Navigation({ showing, toggleShowing, showTime }: NavigationProps) {
   const [moreNavOptions, setMoreNavOptions] = useState(false)
 
   const [isTimeOption, setIsTimeOption] = useState(false)
@@ -169,7 +171,12 @@ function Navigation({ showing }: NavigationProps) {
                   icon={faAngleLeft}
                   style={{ margin: '17px 0px', cursor: 'pointer' }}
                 />
-                {isTimeOption && <TimeSettings />}
+                {isTimeOption && (
+                  <TimeSettings
+                    switchTime={toggleShowing}
+                    showDigitalTime={showTime}
+                  />
+                )}
                 {isDisplayOption && <DisplaySettings />}
               </LeftNavSettings>
             )}

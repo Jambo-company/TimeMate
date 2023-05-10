@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import { createGlobalStyle } from 'styled-components'
 import { RecoilRoot } from 'recoil'
+import { QueryClient, QueryClientProvider } from 'react-query'
 
 const GlobalStyles = createGlobalStyle`
 @import url('https://fonts.google.com/specimen/Montserrat?preview.text=12:23&preview.text_type=custom');
@@ -55,13 +56,16 @@ table {
 	border-spacing: 0;
 }
 `
+const queryClient = new QueryClient()
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <React.StrictMode>
+	    <QueryClientProvider client={queryClient}>
     <RecoilRoot>
       <GlobalStyles />
       <App />
     </RecoilRoot>
+	</QueryClientProvider>
   </React.StrictMode>
 )
