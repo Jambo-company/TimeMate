@@ -110,7 +110,7 @@ function Navigation({ showing, toggleShowing, showTime }: NavigationProps) {
       {showing ? (
         <LeftNav
           layoutId="hide"
-          transition={{ delay: 0.3, delayChildren: 0 }}
+          transition={{ delay: 0.3, delayChildren: 0, type: 'tween' }}
           initial={{ translateX: -100 }}
           animate={{ translateX: 0 }}
           exit={{ translateX: -100 }}

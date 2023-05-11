@@ -34,6 +34,7 @@ export type IDashboardRecords = {
   ownerId: string
   time: number
   secondsCounted: number
+  noOfTimesPaused: number
   startTime: number
   endTime: null
 }

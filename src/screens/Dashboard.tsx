@@ -25,7 +25,6 @@ const DashBoardContainer = styled(motion.div)`
   @media (max-width: 461px) {
     padding: 20px;
   }
-
 `
 const LogsContainer = styled(motion.div)`
   display: flex;

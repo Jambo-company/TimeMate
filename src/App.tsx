@@ -4,7 +4,7 @@ import {
   Route,
 } from 'react-router-dom'
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import 'react-circular-progressbar/dist/styles.css'
 
 import Auth from './screens/Auth'
@@ -14,10 +14,9 @@ import 'react-circular-progressbar/dist/styles.css'
 import Home from './screens/Home'
 import Dashboard from './screens/Dashboard'
 import { User } from 'firebase/auth'
-import { QueryClient, QueryClientProvider, useQuery } from 'react-query'
+import { useQuery } from 'react-query'
 
 function App() {
-  const [init, setInit] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [user, setUser] = useState<User | null>(null)
 
@@ -29,22 +28,8 @@ function App() {
       } else {
         setIsLoggedIn(false)
       }
-      setInit(true)
     })
   }
-
-  // useEffect(() => {
-  //   auth.onAuthStateChanged((authUser) => {
-  //     console.log(authUser, 'this is the user')
-  //     if (authUser) {
-  //       setUser(authUser)
-  //       setIsLoggedIn(true)
-  //     } else {
-  //       setIsLoggedIn(false)
-  //     }
-  //     setInit(true)
-  //   })
-  // }, [])
 
   useQuery('userDetails', userData)
 

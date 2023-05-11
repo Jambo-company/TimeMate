@@ -92,17 +92,25 @@ const TextTimer = styled(motion.span)`
   font-size: 45px;
 `
 
+type ILatestRecord = {
+  id: string
+  ownerId: string
+  time: number
+  startTime: number
+  noOfTimesPaused: number
+  secondsCounted: number
+  endTime: null | number
+}
 interface BottomRightOptionsProps {
   user: User | null
   secondsCounted: number
-  updateTimerRecord(): Promise<void>
+  latestRecord: ILatestRecord | null
+  updateTimerSeconds(): Promise<void>
   isRunning: boolean
   alarmPlaying: boolean
   AlarmHandler: (action: 'Play' | 'Stop') => void
   alarmEnabled: boolean
   toggleAlarm: () => void
-  notificationEnabled: boolean
-  toggleNotification: () => void
   pause: () => void
   resume: () => void
   hours?: number
@@ -113,14 +121,13 @@ interface BottomRightOptionsProps {
 function BottomRightOptions({
   secondsCounted,
   user,
-  updateTimerRecord,
+  latestRecord,
+  updateTimerSeconds,
   isRunning,
   alarmPlaying,
   AlarmHandler,
   alarmEnabled,
   toggleAlarm,
-  notificationEnabled,
-  toggleNotification,
   resume,
   pause,
   hours,
@@ -133,44 +140,33 @@ function BottomRightOptions({
   const [prevTime, setPrevTime] = useState(0)
   useEffect(() => {
     setPrevTime(0)
-    getDashboardData()
   }, [])
-
-  const switchItemsArray = [
-    {
-      text: 'Activate alarm sound',
-      switchState: alarmEnabled,
-      toogleFunction: toggleAlarm,
-    },
-    {
-      text: 'Activate push notification',
-      switchState: notificationEnabled,
-      toogleFunction: toggleNotification,
-    },
-  ]
 
   const btnAnimation = useAnimation()
 
-  const [dashboardRecords, setDashboardRecords] = useState<any>([])
   async function saveToDashboard(time: number) {
     const newTimerData = {
       ownerId: user?.uid,
       time,
       startTime: Date.now(),
+      noOfTimesPaused: 0,
       secondsCounted: 0,
       endTime: null,
     }
     await dbService.collection('timer').add(newTimerData)
   }
-  async function getDashboardData() {
-    await dbService.collection('timer').onSnapshot((snapshots) => {
-      const dashboard = snapshots.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }))
-      setDashboardRecords(dashboard)
-    })
-  }
+
+
+  const [isDragging, setIsDragging] = useState(false)
+  useEffect(() => {
+    if (!isRunning) {
+      setIsDragging(true)
+      setTimeout(() => {
+        setIsDragging(false)
+      }, 750)
+    }
+  }, [seconds, minutes])
+
   return (
     <RightContainerData>
       <StartOrPauseBtn
@@ -183,6 +179,12 @@ function BottomRightOptions({
           }
           if (isRunning) {
             pause()
+            if (latestRecord) {
+              await dbService.doc(`timer/${latestRecord.id}`).update({
+                secondsCounted,
+                noOfTimesPaused: latestRecord.noOfTimesPaused + 1,
+              })
+            }
           } else {
             const date = new Date(Date.now() + totalSelectedTime * 1000)
             const time = String(date.getHours()).padStart(2, '0')
@@ -193,22 +195,20 @@ function BottomRightOptions({
             if (prevTime !== totalSelectedTime) {
               console.log('Save Dashboard')
               await saveToDashboard(totalSelectedTime)
-              await getDashboardData()
             }
             setPrevTime(totalSelectedTime)
+            await updateTimerSeconds()
           }
           btnAnimation.start('hide')
           setTimeout(() => {
             btnAnimation.start('show')
           }, 700)
           console.log('Update Previous')
-          console.log('secondsCounted', secondsCounted)
-          await updateTimerRecord()
         }}>
         {isRunning ? 'Pause' : 'Start Focus'}
       </StartOrPauseBtn>
       <AnimatePresence initial={false}>
-        {!isRunning && !alarmPlaying && (
+        {!isRunning && !alarmPlaying && !isDragging && (
           <Switcher
             transition={{ delay: 0.3 }}
             initial={{ opacity: 0 }}
@@ -231,7 +231,7 @@ function BottomRightOptions({
             transition={{ delay: 0.3 }}
             animate={{
               fontSize:
-                isRunning || alarmPlaying
+                isRunning || alarmPlaying || isDragging
                   ? window.innerWidth <= 461
                     ? '85px'
                     : '95px'

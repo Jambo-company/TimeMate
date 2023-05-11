@@ -92,7 +92,6 @@ function TimeSettings({ switchTime, showDigitalTime }: TimeProps) {
                 key={index}
                 onClick={() => {
                   setMaximumTime(item.value)
-                  console.log('Maximum time is now:', item.text)
                 }}>
                 {item.text}
                 {item.value === maximumTime && <Selected>Selected</Selected>}

@@ -203,7 +203,6 @@ const Auth = ({ isLoggedIn, setIsLoggedIn, setUser }: ILogInProp) => {
   }, [isLoggedIn])
 
   const onFormChange = (event: any) => {
-    console.log(event.target.name)
     const {
       target: { name, value },
     } = event
@@ -245,7 +244,6 @@ const Auth = ({ isLoggedIn, setIsLoggedIn, setUser }: ILogInProp) => {
     const {
       target: { name },
     } = event
-    console.log(name)
 
     let provider: AuthProvider
     provider = new GoogleAuthProvider()
