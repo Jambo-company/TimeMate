@@ -20,7 +20,6 @@ function App() {
   const [init, setInit] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [user, setUser] = useState<User | null>(null)
-  console.log('User', user)
 
   const userData = () => {
     auth.onAuthStateChanged((authUser) => {
@@ -52,16 +51,18 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home user={user} />} />
-
         <Route
-          path="/auth"
+          path="/"
           element={
-            <Auth
-              isLoggedIn={isLoggedIn}
-              setIsLoggedIn={setIsLoggedIn}
-              setUser={setUser}
-            />
+            isLoggedIn ? (
+              <Home user={user} />
+            ) : (
+              <Auth
+                isLoggedIn={isLoggedIn}
+                setIsLoggedIn={setIsLoggedIn}
+                setUser={setUser}
+              />
+            )
           }
         />
         <Route path="/dashboard" element={<Dashboard user={user} />} />
@@ -71,3 +72,4 @@ function App() {
 }
 
 export default App
+
